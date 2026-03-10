@@ -130,46 +130,47 @@ function makeIcon(type, size) {
 
 function addRoute(map, coords, color, dashed) {
   const outline = L.polyline(coords, {
-    color: '#000', weight: 8, opacity: 0,
+    color: '#000', weight: 8, opacity: 0.2,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
 
   const line = L.polyline(coords, {
-    color: color, weight: 5, opacity: 0,
+    color: color, weight: 5, opacity: 0.9,
     dashArray: dashed ? '8,8' : null,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
 
   setTimeout(() => {
-    const el = line._path;
-    const outEl = outline._path;
-    if (el && outEl) {
-      const len = el.getTotalLength() + 50; // extra buffer
+    try {
+      if (line._path && outline._path) {
+        // Use a generous length
+        const len = line._path.getTotalLength() + 200;
 
-      // setup lengths before revealing
-      el.style.strokeDasharray = `${len} ${len}`;
-      el.style.strokeDashoffset = len;
-      outEl.style.strokeDasharray = `${len} ${len}`;
-      outEl.style.strokeDashoffset = len;
+        // Start hidden
+        line._path.style.strokeDasharray = `${len} ${len}`;
+        line._path.style.strokeDashoffset = len;
+        outline._path.style.strokeDasharray = `${len} ${len}`;
+        outline._path.style.strokeDashoffset = len;
 
-      el.getBoundingClientRect(); // flush layout
+        // Flush layout
+        line._path.getBoundingClientRect();
 
-      // Make them visible 
-      el.style.strokeOpacity = '0.9';
-      outEl.style.strokeOpacity = '0.15';
+        // Animate to 0
+        line._path.style.transition = 'stroke-dashoffset 2.5s ease-out';
+        outline._path.style.transition = 'stroke-dashoffset 2.5s ease-out';
 
-      el.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.3, 0.1, 0.3, 1)';
-      outEl.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.3, 0.1, 0.3, 1)';
+        line._path.style.strokeDashoffset = '0';
+        outline._path.style.strokeDashoffset = '0';
 
-      el.style.strokeDashoffset = '0';
-      outEl.style.strokeDashoffset = '0';
-
-      // if dashed, restore dashes after animation completes
-      if (dashed) {
-        setTimeout(() => { el.style.strokeDasharray = '8,8'; }, 1500);
+        // Revert dashes if needed
+        if (dashed) {
+          setTimeout(() => { line._path.style.strokeDasharray = '8,8'; }, 2600);
+        }
       }
+    } catch (e) {
+      console.log('Animation error', e);
     }
-  }, 1400);
+  }, 150);
 
   return line;
 }
@@ -190,15 +191,7 @@ function createMap(id, center, zoom, boundsArr) {
     .addTo(map);
 
   if (boundsArr) {
-    // Start slightly zoomed out
     map.fitBounds(boundsArr, { padding: [30, 30] });
-    const currentZoom = map.getZoom();
-    map.setZoom(currentZoom - 1, { animate: false });
-
-    // Gradually zoom in and pan to the exact bounds
-    setTimeout(() => {
-      map.flyToBounds(boundsArr, { padding: [30, 30], duration: 1.2, easeLinearity: 0.1 });
-    }, 100);
   }
 
   return map;
