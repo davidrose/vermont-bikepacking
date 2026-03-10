@@ -143,12 +143,12 @@ function addMarker(map, latlng, icon, popup) {
 
 function addRoute(map, coords, color, dashed) {
   const outline = L.polyline(coords, {
-    color: '#000', weight: 8, opacity: 0,
+    color: '#000', weight: 8, opacity: 0.2,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
 
   const line = L.polyline(coords, {
-    color: color, weight: 5, opacity: 0,
+    color: color, weight: 5, opacity: 0.9,
     dashArray: dashed ? '8,8' : null,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
@@ -160,7 +160,7 @@ let currentMapMarkers = [];
 let currentMapRoutes = [];
 
 function playMapAnimation(dayId, markers, routes) {
-  const TOTAL_DURATION = 5000;
+  const TOTAL_DURATION = 1500;
 
   const daySection = document.getElementById(dayId);
   const timelineSVGs = daySection ? Array.from(daySection.querySelectorAll('.timeline-svg')) : [];
@@ -176,44 +176,16 @@ function playMapAnimation(dayId, markers, routes) {
     if (timelineSVGs[idx]) timelineSVGs[idx].classList.add('marker-pop');
   }
 
-  // Draw lines smoothly via CSS
-  routes.forEach(r => {
-    const el = r.line._path;
-    const outEl = r.outline._path;
-    if (el && outEl) {
-      const len = el.getTotalLength() + 200;
-
-      el.style.strokeDasharray = `${len} ${len}`;
-      el.style.strokeDashoffset = len;
-      outEl.style.strokeDasharray = `${len} ${len}`;
-      outEl.style.strokeDashoffset = len;
-
-      el.getBoundingClientRect(); // flush layout
-
-      r.line.setStyle({ opacity: 0.9 });
-      r.outline.setStyle({ opacity: 0.2 });
-
-      el.style.transition = `stroke-dashoffset ${TOTAL_DURATION}ms ease-out`;
-      outEl.style.transition = `stroke-dashoffset ${TOTAL_DURATION}ms ease-out`;
-
-      el.style.strokeDashoffset = '0';
-      outEl.style.strokeDashoffset = '0';
-
-      if (r.dashed) {
-        setTimeout(() => { el.style.strokeDasharray = '8,8'; }, TOTAL_DURATION + 500);
-      }
+  // Pop markers proportionately after the map settles
+  setTimeout(() => {
+    if (markers.length > 0) {
+      const timePerMarker = TOTAL_DURATION / markers.length;
+      markers.forEach((m, idx) => {
+        const delay = idx === 0 ? 0 : idx * timePerMarker;
+        setTimeout(() => popMarker(m, idx), delay);
+      });
     }
-  });
-
-  // Pop markers proportionally over the 5 seconds
-  if (markers.length > 0) {
-    const timePerMarker = TOTAL_DURATION / markers.length;
-    markers.forEach((m, idx) => {
-      // First marker pops instantly
-      const delay = idx === 0 ? 0 : idx * timePerMarker;
-      setTimeout(() => popMarker(m, idx), delay);
-    });
-  }
+  }, 1000); // Wait for map zoom to finish
 }
 
 function createMap(id, center, zoom, boundsArr) {
@@ -233,6 +205,14 @@ function createMap(id, center, zoom, boundsArr) {
 
   if (boundsArr) {
     map.fitBounds(boundsArr, { padding: [30, 30] });
+    const currentZoom = map.getZoom();
+    map.setZoom(currentZoom - 1, { animate: false });
+
+    // Ensure map doesn't get stuck visually, call invalidateSize
+    setTimeout(() => {
+      map.invalidateSize();
+      map.flyToBounds(boundsArr, { padding: [30, 30], duration: 1.2, easeLinearity: 0.1 });
+    }, 200);
   }
 
   return map;

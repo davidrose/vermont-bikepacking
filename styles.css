@@ -753,8 +753,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   background: #1a1a1a;
   border-radius: 50%;
   color: #fff;
@@ -764,8 +764,8 @@ body {
 }
 
 .timeline-svg svg {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
 }
 
 @keyframes springPop {
