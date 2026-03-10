@@ -429,7 +429,7 @@ body {
   margin-bottom: 4px;
 }
 
-.timeline-emoji {
+/* replaced */ {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -758,4 +758,21 @@ body {
   .hero-illustration img {
     max-width: 320px;
   }
+}
+.timeline-svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  margin-right: -2px;
+}
+.timeline-svg svg {
+  width: 14px;
+  height: 14px;
 }
