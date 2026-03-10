@@ -53,9 +53,16 @@ dayLinks.forEach(link => {
 
 // ═══ ANIMATED COUNTER ═══
 function animateCounter(el) {
-  const target = parseInt(el.dataset.target);
+  const targetRaw = el.dataset.target;
+  const target = parseInt(targetRaw);
   const suffix = el.dataset.suffix || '';
   const prefix = el.dataset.prefix || '';
+
+  if (isNaN(target)) {
+    el.textContent = prefix + targetRaw + suffix;
+    return;
+  }
+
   const duration = 1800;
   const start = performance.now();
   function update(now) {
