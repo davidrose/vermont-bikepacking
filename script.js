@@ -246,15 +246,18 @@ function initMap(id) {
 
 function initMapContents(map, dayId, addContentFn) {
   mapConfigs[map.getContainer().id] = map;
-  // invalidateSize ensures Leaflet knows the true pixel dimensions of the
-  // container before projecting any lat/lng → pixel coordinates.
+  // Force the map container to its true rendered size before projecting coords.
+  // Leaflet's whenReady fires too early (before browser layout is complete).
+  // A short timeout after invalidateSize gives the browser time to finalize
+  // the container dimensions, so polyline coordinates project correctly.
   map.invalidateSize();
-  map.whenReady(() => {
+  setTimeout(() => {
+    map.invalidateSize();
     currentMapMarkers = [];
     currentMapRoutes = [];
     addContentFn(map);
     playMapAnimation(dayId, currentMapMarkers, currentMapRoutes);
-  });
+  }, 300);
 }
 
 // MAP 0: Night Before — Burlington / North Beach
