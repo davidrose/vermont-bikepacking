@@ -244,176 +244,138 @@ function initMap(id) {
   }
 }
 
+function initMapContents(map, dayId, addContentFn) {
+  mapConfigs[map.getContainer().id] = map;
+  // invalidateSize ensures Leaflet knows the true pixel dimensions of the
+  // container before projecting any lat/lng → pixel coordinates.
+  map.invalidateSize();
+  map.whenReady(() => {
+    currentMapMarkers = [];
+    currentMapRoutes = [];
+    addContentFn(map);
+    playMapAnimation(dayId, currentMapMarkers, currentMapRoutes);
+  });
+}
+
 // MAP 0: Night Before — Burlington / North Beach
 function initMap0() {
-  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map0', [44.49, -73.24], 13,
     [[44.475, -73.28], [44.56, -73.20]]);
-  mapConfigs['leaflet-map0'] = map;
-
-  // Exact coordinates for North Beach: [44.4947, -73.2358]
-  addMarker(map, [44.4947, -73.2358], makeIcon('camp', 24), '<b>North Beach Campground</b><br>69 tent sites on Lake Champlain.<br>Bike path to downtown & Island Line.')
-  addMarker(map, [44.4770, -73.2210], makeIcon('food', 20), '<b>Church Street / Waterfront</b><br>Restaurants, bars, City Market co-op')
-  addMarker(map, [44.5530, -73.2750], makeIcon('park', 18), '<b>Airport Park</b><br>Day 1 start. 10 min ride from North Beach.')
-
-  // Bike path from North Beach to Airport Park
-  addRoute(map, [
-    [44.4947, -73.2358], [44.4950, -73.2420], [44.5100, -73.2500],
-    [44.5250, -73.2600], [44.5400, -73.2700], [44.5530, -73.2750]
-  ], trailColor, false);
-  playMapAnimation('day0', currentMapMarkers, currentMapRoutes);
+  initMapContents(map, 'day0', m => {
+    addMarker(m, [44.4947, -73.2358], makeIcon('camp', 24), '<b>North Beach Campground</b><br>69 tent sites on Lake Champlain.<br>Bike path to downtown & Island Line.')
+    addMarker(m, [44.4770, -73.2210], makeIcon('food', 20), '<b>Church Street / Waterfront</b><br>Restaurants, bars, City Market co-op')
+    addMarker(m, [44.5530, -73.2750], makeIcon('park', 18), '<b>Airport Park</b><br>Day 1 start. 10 min ride from North Beach.')
+    addRoute(m, [
+      [44.4947, -73.2358], [44.4950, -73.2420], [44.5100, -73.2500],
+      [44.5250, -73.2600], [44.5400, -73.2700], [44.5530, -73.2750]
+    ], trailColor, false);
+  });
 }
 
 // MAP 1: The Lake Crossing
 function initMap1() {
-  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map1', [44.65, -73.10], 10,
     [[44.55, -73.32], [44.82, -72.80]]);
-  mapConfigs['leaflet-map1'] = map;
-
-  // Airport Park → Causeway (trail)
-  addRoute(map, [
-    [44.5530, -73.2750], [44.5700, -73.2800], [44.5880, -73.2870],
-    [44.6050, -73.2950], [44.6180, -73.3050]
-  ], trailColor, false);
-
-  // Ferry
-  addRoute(map, [[44.6180, -73.3050], [44.6340, -73.3000]], ferryColor, true);
-
-  // Islands road
-  addRoute(map, [
-    [44.6340, -73.3000], [44.6600, -73.2950], [44.7050, -73.2880],
-    [44.7400, -73.2500], [44.7800, -73.1800], [44.8110, -73.0830]
-  ], roadColor, true);
-
-  // St Albans to LVRT
-  addRoute(map, [
-    [44.8110, -73.0830], [44.8020, -72.9630]
-  ], roadColor, true);
-
-  // LVRT to Brewster
-  addRoute(map, [
-    [44.8020, -72.9630], [44.7660, -72.8370],
-    [44.6440, -72.8760], [44.6460, -72.8310]
-  ], trailColor, false);
-
-  // Road to campground
-  addRoute(map, [[44.6460, -72.8310], [44.6270, -72.8130]], roadColor, true);
-
-  // Markers
-  addMarker(map, [44.5530, -73.2750], makeIcon('park', 22), '<b>Airport Park</b><br>Start here! Free parking.')
-  addMarker(map, [44.6180, -73.3050], makeIcon('ferry', 22), '<b>Bike Ferry</b><br>$8 RT, seasonal 10a-6p')
-  addMarker(map, [44.7050, -73.2880], makeIcon('food', 20), '<b>Hero\'s Welcome</b><br>General store, amazing sandwiches')
-  addMarker(map, [44.8110, -73.0830], makeIcon('food', 18), '<b>St. Albans</b><br>Resupply, connect to LVRT')
-  addMarker(map, [44.6440, -72.8760], makeIcon('bridge', 18), '<b>Cambridge Junction</b><br>Covered bridge')
-  addMarker(map, [44.6270, -72.8130], makeIcon('camp', 24), '<b>Brewster River Campground</b><br>Night 1. Waterfall, swimming hole, fireflies.')
-  playMapAnimation('day1', currentMapMarkers, currentMapRoutes);
+  initMapContents(map, 'day1', m => {
+    addRoute(m, [
+      [44.5530, -73.2750], [44.5700, -73.2800], [44.5880, -73.2870],
+      [44.6050, -73.2950], [44.6180, -73.3050]
+    ], trailColor, false);
+    addRoute(m, [[44.6180, -73.3050], [44.6340, -73.3000]], ferryColor, true);
+    addRoute(m, [
+      [44.6340, -73.3000], [44.6600, -73.2950], [44.7050, -73.2880],
+      [44.7400, -73.2500], [44.7800, -73.1800], [44.8110, -73.0830]
+    ], roadColor, true);
+    addRoute(m, [[44.8110, -73.0830], [44.8020, -72.9630]], roadColor, true);
+    addRoute(m, [
+      [44.8020, -72.9630], [44.7660, -72.8370],
+      [44.6440, -72.8760], [44.6460, -72.8310]
+    ], trailColor, false);
+    addRoute(m, [[44.6460, -72.8310], [44.6270, -72.8130]], roadColor, true);
+    addMarker(m, [44.5530, -73.2750], makeIcon('park', 22), '<b>Airport Park</b><br>Start here! Free parking.')
+    addMarker(m, [44.6180, -73.3050], makeIcon('ferry', 22), '<b>Bike Ferry</b><br>$8 RT, seasonal 10a-6p')
+    addMarker(m, [44.7050, -73.2880], makeIcon('food', 20), '<b>Hero\'s Welcome</b><br>General store, amazing sandwiches')
+    addMarker(m, [44.8110, -73.0830], makeIcon('food', 18), '<b>St. Albans</b><br>Resupply, connect to LVRT')
+    addMarker(m, [44.6440, -72.8760], makeIcon('bridge', 18), '<b>Cambridge Junction</b><br>Covered bridge')
+    addMarker(m, [44.6270, -72.8130], makeIcon('camp', 24), '<b>Brewster River Campground</b><br>Night 1. Waterfall, swimming hole, fireflies.')
+  });
 }
 
 // MAP 2: Into the Kingdom
 function initMap2() {
-  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map2', [44.48, -72.50], 10,
     [[44.27, -72.90], [44.66, -72.10]]);
-  mapConfigs['leaflet-map2'] = map;
-
-  // Brewster to LVRT
-  addRoute(map, [[44.6270, -72.8130], [44.6440, -72.8760]], roadColor, true);
-
-  // LVRT east
-  addRoute(map, [
-    [44.6440, -72.8760], [44.6330, -72.7950], [44.5910, -72.6590],
-    [44.5730, -72.6350], [44.5620, -72.5980], [44.5570, -72.5920],
-    [44.5520, -72.5100], [44.5050, -72.3680], [44.4100, -72.1400]
-  ], trailColor, false);
-
-  // Road south to Groton
-  addRoute(map, [
-    [44.4100, -72.1400], [44.3800, -72.1600],
-    [44.3300, -72.1800], [44.2980, -72.2050]
-  ], roadColor, true);
-
-  addMarker(map, [44.6270, -72.8130], makeIcon('camp', 20), '<b>Brewster River</b><br>Day 2 start')
-  addMarker(map, [44.6330, -72.7950], makeIcon('swim', 18), '<b>Poland Covered Bridge</b><br>Sandbar swimming (Komoot pick)')
-  addMarker(map, [44.5620, -72.5980], makeIcon('food', 20), '<b>Lost Nation Brewing</b><br>Thu-Sun only, noon-7p')
-  addMarker(map, [44.5730, -72.6350], makeIcon('food', 18), '<b>Two Son\'s Bakehouse</b><br>Hyde Park (Komoot pick)')
-  addMarker(map, [44.5520, -72.5100], makeIcon('bridge', 18), '<b>Fisher Covered Bridge</b><br>Last covered railroad bridge in VT')
-  addMarker(map, [44.5050, -72.3680], makeIcon('food', 20), '<b>Front Seat Coffee</b><br>Cardamom rose lattes, 7a-3p')
-  addMarker(map, [44.5150, -72.3200], makeIcon('food', 16), '<b>Hill Farmstead detour</b><br>Best brewery in the world (Komoot pick)')
-  addMarker(map, [44.4100, -72.1400], makeIcon('point', 16), '<b>Danville</b><br>Turn south on VT-232')
-  addMarker(map, [44.2980, -72.2050], makeIcon('camp', 24), '<b>New Discovery State Park</b><br>Night 2. CCC lean-tos, stone fireplaces.')
-  playMapAnimation('day2', currentMapMarkers, currentMapRoutes);
+  initMapContents(map, 'day2', m => {
+    addRoute(m, [[44.6270, -72.8130], [44.6440, -72.8760]], roadColor, true);
+    addRoute(m, [
+      [44.6440, -72.8760], [44.6330, -72.7950], [44.5910, -72.6590],
+      [44.5730, -72.6350], [44.5620, -72.5980], [44.5570, -72.5920],
+      [44.5520, -72.5100], [44.5050, -72.3680], [44.4100, -72.1400]
+    ], trailColor, false);
+    addRoute(m, [
+      [44.4100, -72.1400], [44.3800, -72.1600],
+      [44.3300, -72.1800], [44.2980, -72.2050]
+    ], roadColor, true);
+    addMarker(m, [44.6270, -72.8130], makeIcon('camp', 20), '<b>Brewster River</b><br>Day 2 start')
+    addMarker(m, [44.6330, -72.7950], makeIcon('swim', 18), '<b>Poland Covered Bridge</b><br>Sandbar swimming (Komoot pick)')
+    addMarker(m, [44.5620, -72.5980], makeIcon('food', 20), '<b>Lost Nation Brewing</b><br>Thu-Sun only, noon-7p')
+    addMarker(m, [44.5730, -72.6350], makeIcon('food', 18), '<b>Two Son\'s Bakehouse</b><br>Hyde Park (Komoot pick)')
+    addMarker(m, [44.5520, -72.5100], makeIcon('bridge', 18), '<b>Fisher Covered Bridge</b><br>Last covered railroad bridge in VT')
+    addMarker(m, [44.5050, -72.3680], makeIcon('food', 20), '<b>Front Seat Coffee</b><br>Cardamom rose lattes, 7a-3p')
+    addMarker(m, [44.5150, -72.3200], makeIcon('food', 16), '<b>Hill Farmstead detour</b><br>Best brewery in the world (Komoot pick)')
+    addMarker(m, [44.4100, -72.1400], makeIcon('point', 16), '<b>Danville</b><br>Turn south on VT-232')
+    addMarker(m, [44.2980, -72.2050], makeIcon('camp', 24), '<b>New Discovery State Park</b><br>Night 2. CCC lean-tos, stone fireplaces.')
+  });
 }
 
 // MAP 3: The Easy Return
 function initMap3() {
-  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map3', [44.48, -72.45], 10,
     [[44.28, -72.70], [44.62, -72.10]]);
-  mapConfigs['leaflet-map3'] = map;
-
-  // Road north from Groton
-  addRoute(map, [
-    [44.2980, -72.2050], [44.3300, -72.1800],
-    [44.3800, -72.1600], [44.4100, -72.1400]
-  ], roadColor, true);
-
-  // LVRT west
-  addRoute(map, [
-    [44.4100, -72.1400], [44.5050, -72.3680],
-    [44.5520, -72.5100], [44.5620, -72.5980],
-    [44.5730, -72.6350], [44.5900, -72.6500]
-  ], trailColor, false);
-
-  // Road south to Elmore
-  addRoute(map, [
-    [44.5570, -72.5920], [44.5350, -72.5280], [44.5220, -72.5160]
-  ], roadColor, true);
-
-  addMarker(map, [44.2980, -72.2050], makeIcon('camp', 20), '<b>New Discovery</b><br>Day 3 start')
-  addMarker(map, [44.5900, -72.6500], makeIcon('swim', 20), '<b>Dog\'s Head Falls</b><br>River swimming, sandy bottoms')
-  addMarker(map, [44.5220, -72.5160], makeIcon('camp', 24), '<b>Elmore State Park</b><br>Night 3. Sandy beach, fire tower.')
-  playMapAnimation('day3', currentMapMarkers, currentMapRoutes);
+  initMapContents(map, 'day3', m => {
+    addRoute(m, [
+      [44.2980, -72.2050], [44.3300, -72.1800],
+      [44.3800, -72.1600], [44.4100, -72.1400]
+    ], roadColor, true);
+    addRoute(m, [
+      [44.4100, -72.1400], [44.5050, -72.3680],
+      [44.5520, -72.5100], [44.5620, -72.5980],
+      [44.5730, -72.6350], [44.5900, -72.6500]
+    ], trailColor, false);
+    addRoute(m, [
+      [44.5570, -72.5920], [44.5350, -72.5280], [44.5220, -72.5160]
+    ], roadColor, true);
+    addMarker(m, [44.2980, -72.2050], makeIcon('camp', 20), '<b>New Discovery</b><br>Day 3 start')
+    addMarker(m, [44.5900, -72.6500], makeIcon('swim', 20), '<b>Dog\'s Head Falls</b><br>River swimming, sandy bottoms')
+    addMarker(m, [44.5220, -72.5160], makeIcon('camp', 24), '<b>Elmore State Park</b><br>Night 3. Sandy beach, fire tower.')
+  });
 }
 
 // MAP 4: Back Across the Lake
 function initMap4() {
-  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map4', [44.63, -73.05], 10,
     [[44.50, -73.32], [44.82, -72.50]]);
-  mapConfigs['leaflet-map4'] = map;
-
-  // Road from Elmore
-  addRoute(map, [[44.5220, -72.5160], [44.5570, -72.5920]], roadColor, true);
-
-  // LVRT west
-  addRoute(map, [
-    [44.5570, -72.5920], [44.5620, -72.5980],
-    [44.6440, -72.8760], [44.8020, -72.9630]
-  ], trailColor, false);
-
-  // Road to St Albans
-  addRoute(map, [[44.8020, -72.9630], [44.8110, -73.0830]], roadColor, true);
-
-  // Road south through islands
-  addRoute(map, [
-    [44.8110, -73.0830], [44.7800, -73.1800],
-    [44.7050, -73.2880], [44.6340, -73.3000]
-  ], roadColor, true);
-
-  // Ferry
-  addRoute(map, [[44.6340, -73.3000], [44.6180, -73.3050]], ferryColor, true);
-
-  // Causeway
-  addRoute(map, [
-    [44.6180, -73.3050], [44.6050, -73.2950],
-    [44.5880, -73.2870], [44.5530, -73.2750]
-  ], trailColor, false);
-
-  addMarker(map, [44.5220, -72.5160], makeIcon('camp', 18), '<b>Elmore</b><br>Day 4 start')
-  addMarker(map, [44.5620, -72.5980], makeIcon('food', 18), '<b>Morrisville Coffee</b>')
-  addMarker(map, [44.8110, -73.0830], makeIcon('food', 18), '<b>St. Albans</b><br>Last meal before the lake')
-  addMarker(map, [44.6180, -73.3050], makeIcon('ferry', 20), '<b>Bike Ferry</b><br>Return crossing')
-  addMarker(map, [44.5530, -73.2750], makeIcon('finish', 24), '<b>Airport Park — FINISH!</b><br>Victory swim!')
-  playMapAnimation('day4', currentMapMarkers, currentMapRoutes);
+  initMapContents(map, 'day4', m => {
+    addRoute(m, [[44.5220, -72.5160], [44.5570, -72.5920]], roadColor, true);
+    addRoute(m, [
+      [44.5570, -72.5920], [44.5620, -72.5980],
+      [44.6440, -72.8760], [44.8020, -72.9630]
+    ], trailColor, false);
+    addRoute(m, [[44.8020, -72.9630], [44.8110, -73.0830]], roadColor, true);
+    addRoute(m, [
+      [44.8110, -73.0830], [44.7800, -73.1800],
+      [44.7050, -73.2880], [44.6340, -73.3000]
+    ], roadColor, true);
+    addRoute(m, [[44.6340, -73.3000], [44.6180, -73.3050]], ferryColor, true);
+    addRoute(m, [
+      [44.6180, -73.3050], [44.6050, -73.2950],
+      [44.5880, -73.2870], [44.5530, -73.2750]
+    ], trailColor, false);
+    addMarker(m, [44.5220, -72.5160], makeIcon('camp', 18), '<b>Elmore</b><br>Day 4 start')
+    addMarker(m, [44.5620, -72.5980], makeIcon('food', 18), '<b>Morrisville Coffee</b>')
+    addMarker(m, [44.8110, -73.0830], makeIcon('food', 18), '<b>St. Albans</b><br>Last meal before the lake')
+    addMarker(m, [44.6180, -73.3050], makeIcon('ferry', 20), '<b>Bike Ferry</b><br>Return crossing')
+    addMarker(m, [44.5530, -73.2750], makeIcon('finish', 24), '<b>Airport Park — FINISH!</b><br>Victory swim!')
+  });
 }
+
