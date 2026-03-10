@@ -141,14 +141,13 @@ function addMarker(map, latlng, icon, popup) {
 
 function addRoute(map, coords, color, dashed) {
   L.polyline(coords, {
-    color: '#000', weight: 8, opacity: 0.2,
+    color: '#000', weight: 14, opacity: 0.25,
     lineCap: 'round', lineJoin: 'round',
-    smoothFactor: 0  // Disable Douglas-Peucker simplification — without this,
-    // routes spanning 50+ miles at zoom 10 get reduced to 2-3px stubs
+    smoothFactor: 0
   }).addTo(map);
   L.polyline(coords, {
-    color: color, weight: 5, opacity: 0.9,
-    dashArray: dashed ? '8,8' : null,
+    color: color, weight: 9, opacity: 1,
+    dashArray: dashed ? '10,8' : null,
     lineCap: 'round', lineJoin: 'round',
     smoothFactor: 0
   }).addTo(map);
