@@ -174,11 +174,16 @@ const mapConfigs = {
 
 function initMapContents(map, dayId, addContentFn) {
   mapConfigs[map.getContainer().id] = map;
-  // Double invalidateSize + 600ms timeout guarantees the container is at its
-  // true pixel size before Leaflet projects coordinates into SVG points.
+  // We defer BOTH fitBounds AND route drawing to after a real browser layout.
+  // The map container may have zero dimensions when first created (from inside
+  // an off-screen or animated section). invalidateSize + a real timeout ensures
+  // Leaflet projects all lat/lng coordinates into the correct pixel space.
   map.invalidateSize();
   setTimeout(() => {
     map.invalidateSize();
+    if (map._pendingBounds) {
+      map.fitBounds(map._pendingBounds, { padding: [40, 40] });
+    }
     addContentFn(map);
     // Pop markers 400ms after routes are added
     setTimeout(() => popMapMarkers(map, dayId), 400);
@@ -201,7 +206,8 @@ function createMap(id, center, zoom, boundsArr) {
     .addTo(map);
 
   if (boundsArr) {
-    map.fitBounds(boundsArr, { padding: [40, 40] });
+    // Store for deferred fitBounds call in initMapContents
+    map._pendingBounds = boundsArr;
   }
 
   return map;
