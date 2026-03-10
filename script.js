@@ -128,58 +128,130 @@ function makeIcon(type, size) {
   const discSize = s + 14;
   const svg = svgIcons[type] || svgIcons.point;
   return L.divIcon({
-    html: `<div style="width:${discSize}px;height:${discSize}px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.4);border:2px solid #fff;"><div style="width:${s}px;height:${s}px;color:#fff">${svg}</div></div>`,
+    html: `<div class="marker-inner marker-hidden" style="width:${discSize}px;height:${discSize}px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,0.4);border:2px solid #fff;"><div style="width:${s}px;height:${s}px;color:#fff">${svg}</div></div>`,
     className: 'svg-marker',
     iconSize: [discSize, discSize],
     iconAnchor: [discSize / 2, discSize / 2]
   });
 }
 
+function addMarker(map, latlng, icon, popup) {
+  const m = L.marker(latlng, { icon: icon }).bindPopup(popup).addTo(map);
+  currentMapMarkers.push({ marker: m, latlng: latlng });
+  return m;
+}
+
 function addRoute(map, coords, color, dashed) {
-  const outline = L.polyline(coords, {
+  const outline = L.polyline([], {
     color: '#000', weight: 8, opacity: 0.2,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
 
-  const line = L.polyline(coords, {
+  const line = L.polyline([], {
     color: color, weight: 5, opacity: 0.9,
     dashArray: dashed ? '8,8' : null,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
 
-  setTimeout(() => {
-    try {
-      if (line._path && outline._path) {
-        // Use a generous length
-        const len = line._path.getTotalLength() + 200;
+  currentMapRoutes.push({ line, outline, coords });
+}
+let currentMapMarkers = [];
+let currentMapRoutes = [];
 
-        // Start hidden
-        line._path.style.strokeDasharray = `${len} ${len}`;
-        line._path.style.strokeDashoffset = len;
-        outline._path.style.strokeDasharray = `${len} ${len}`;
-        outline._path.style.strokeDashoffset = len;
+function playMapAnimation(dayId, markers, routes) {
+  const TOTAL_DURATION = 5000;
 
-        // Flush layout
-        line._path.getBoundingClientRect();
+  // Calculate total route length in coordinates (approximate distance scaling)
+  let totalPoints = 0;
+  routes.forEach(route => {
+    totalPoints += route.coords.length - 1;
+  });
 
-        // Animate to 0
-        line._path.style.transition = 'stroke-dashoffset 2.5s ease-out';
-        outline._path.style.transition = 'stroke-dashoffset 2.5s ease-out';
+  if (totalPoints === 0) return;
+  const timePerSegment = TOTAL_DURATION / totalPoints;
 
-        line._path.style.strokeDashoffset = '0';
-        outline._path.style.strokeDashoffset = '0';
+  // Grab timelines
+  const daySection = document.getElementById(dayId);
+  const timelineSVGs = daySection ? Array.from(daySection.querySelectorAll('.timeline-svg')) : [];
 
-        // Revert dashes if needed
-        if (dashed) {
-          setTimeout(() => { line._path.style.strokeDasharray = '8,8'; }, 2600);
-        }
-      }
-    } catch (e) {
-      console.log('Animation error', e);
+  let currentRouteIdx = 0;
+  let currentSegmentIdx = 0;
+
+  // Animation loop logic
+  function drawNext() {
+    if (currentRouteIdx >= routes.length) {
+      // Done drawing lines, pop any remaining markers just in case
+      markers.forEach((m, i) => popMarker(m, i));
+      return;
     }
-  }, 150);
 
-  return line;
+    const r = routes[currentRouteIdx];
+
+    // We append the point to the route
+    const currentLineCoords = r.line.getLatLngs();
+    const nextCoord = r.coords[currentSegmentIdx + 1];
+
+    currentLineCoords.push(nextCoord);
+    r.line.setLatLngs(currentLineCoords);
+    r.outline.setLatLngs(currentLineCoords);
+
+    // Check if we hit any markers near this coordinate
+    markers.forEach((m, i) => {
+      if (m.popped) return;
+      const d = mapDistance(m.latlng, nextCoord);
+      if (d < 0.01) { // roughly close
+        popMarker(m, i);
+      }
+    });
+
+    currentSegmentIdx++;
+    if (currentSegmentIdx >= r.coords.length - 1) {
+      // Done with this route segment
+      currentRouteIdx++;
+      currentSegmentIdx = 0;
+      if (currentRouteIdx < routes.length) {
+        // Init next route starting point
+        const nextR = routes[currentRouteIdx];
+        const startPoint = nextR.coords[0];
+        nextR.line.setLatLngs([startPoint]);
+        nextR.outline.setLatLngs([startPoint]);
+      }
+    }
+
+    setTimeout(drawNext, timePerSegment);
+  }
+
+  function popMarker(m, idx) {
+    m.popped = true;
+    m.marker._icon?.querySelector('.marker-inner')?.classList.add('marker-pop');
+    // Pop corresponding timeline svg
+    if (timelineSVGs[idx]) {
+      timelineSVGs[idx].classList.add('marker-pop');
+    }
+  }
+
+  function mapDistance(p1, p2) {
+    if (!p1 || !p2) return 999;
+    const p1arr = Array.isArray(p1) ? p1 : [p1.lat, p1.lng];
+    const p2arr = Array.isArray(p2) ? p2 : [p2.lat, p2.lng];
+    return Math.sqrt(Math.pow(p1arr[0] - p2arr[0], 2) + Math.pow(p1arr[1] - p2arr[1], 2));
+  }
+
+  // Start drawing!
+  if (routes.length > 0) {
+    const r = routes[0];
+    const startPoint = r.coords[0];
+    r.line.setLatLngs([startPoint]);
+    r.outline.setLatLngs([startPoint]);
+
+    // Immediate pop of the first marker if it's right at start
+    setTimeout(drawNext, timePerSegment);
+  } else {
+    // If no routes, just pop markers
+    markers.forEach((m, i) => {
+      setTimeout(() => popMarker(m, i), i * 500);
+    });
+  }
 }
 
 function createMap(id, center, zoom, boundsArr) {
@@ -237,30 +309,27 @@ function initMap(id) {
 
 // MAP 0: Night Before — Burlington / North Beach
 function initMap0() {
+  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map0', [44.49, -73.24], 13,
     [[44.475, -73.28], [44.56, -73.20]]);
   mapConfigs['leaflet-map0'] = map;
 
   // Exact coordinates for North Beach: [44.4947, -73.2358]
-  L.marker([44.4947, -73.2358], { icon: makeIcon('camp', 24) })
-    .bindPopup('<b>North Beach Campground</b><br>69 tent sites on Lake Champlain.<br>Bike path to downtown & Island Line.')
-    .addTo(map);
-  L.marker([44.4770, -73.2210], { icon: makeIcon('food', 20) })
-    .bindPopup('<b>Church Street / Waterfront</b><br>Restaurants, bars, City Market co-op')
-    .addTo(map);
-  L.marker([44.5530, -73.2750], { icon: makeIcon('park', 18) })
-    .bindPopup('<b>Airport Park</b><br>Day 1 start. 10 min ride from North Beach.')
-    .addTo(map);
+  L.marker([44.4947, -73.2358], makeIcon('camp', 24), '<b>North Beach Campground</b><br>69 tent sites on Lake Champlain.<br>Bike path to downtown & Island Line.')
+  addMarker(map, [44.4770, -73.2210], makeIcon('food', 20), '<b>Church Street / Waterfront</b><br>Restaurants, bars, City Market co-op')
+  addMarker(map, [44.5530, -73.2750], makeIcon('park', 18), '<b>Airport Park</b><br>Day 1 start. 10 min ride from North Beach.')
 
   // Bike path from North Beach to Airport Park
   addRoute(map, [
     [44.4947, -73.2358], [44.4950, -73.2420], [44.5100, -73.2500],
     [44.5250, -73.2600], [44.5400, -73.2700], [44.5530, -73.2750]
   ], trailColor, false);
+  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
 }
 
 // MAP 1: The Lake Crossing
 function initMap1() {
+  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map1', [44.65, -73.10], 10,
     [[44.55, -73.32], [44.82, -72.80]]);
   mapConfigs['leaflet-map1'] = map;
@@ -295,16 +364,18 @@ function initMap1() {
   addRoute(map, [[44.6460, -72.8310], [44.6270, -72.8130]], roadColor, true);
 
   // Markers
-  L.marker([44.5530, -73.2750], { icon: makeIcon('park', 22) }).bindPopup('<b>Airport Park</b><br>Start here! Free parking.').addTo(map);
-  L.marker([44.6180, -73.3050], { icon: makeIcon('ferry', 22) }).bindPopup('<b>Bike Ferry</b><br>$8 RT, seasonal 10a-6p').addTo(map);
-  L.marker([44.7050, -73.2880], { icon: makeIcon('food', 20) }).bindPopup('<b>Hero\'s Welcome</b><br>General store, amazing sandwiches').addTo(map);
-  L.marker([44.8110, -73.0830], { icon: makeIcon('food', 18) }).bindPopup('<b>St. Albans</b><br>Resupply, connect to LVRT').addTo(map);
-  L.marker([44.6440, -72.8760], { icon: makeIcon('bridge', 18) }).bindPopup('<b>Cambridge Junction</b><br>Covered bridge').addTo(map);
-  L.marker([44.6270, -72.8130], { icon: makeIcon('camp', 24) }).bindPopup('<b>Brewster River Campground</b><br>Night 1. Waterfall, swimming hole, fireflies.').addTo(map);
+  addMarker(map, [44.5530, -73.2750], makeIcon('park', 22), '<b>Airport Park</b><br>Start here! Free parking.')
+  addMarker(map, [44.6180, -73.3050], makeIcon('ferry', 22), '<b>Bike Ferry</b><br>$8 RT, seasonal 10a-6p')
+  addMarker(map, [44.7050, -73.2880], makeIcon('food', 20), '<b>Hero\'s Welcome</b><br>General store, amazing sandwiches')
+  addMarker(map, [44.8110, -73.0830], makeIcon('food', 18), '<b>St. Albans</b><br>Resupply, connect to LVRT')
+  addMarker(map, [44.6440, -72.8760], makeIcon('bridge', 18), '<b>Cambridge Junction</b><br>Covered bridge')
+  addMarker(map, [44.6270, -72.8130], makeIcon('camp', 24), '<b>Brewster River Campground</b><br>Night 1. Waterfall, swimming hole, fireflies.')
+  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
 }
 
 // MAP 2: Into the Kingdom
 function initMap2() {
+  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map2', [44.48, -72.50], 10,
     [[44.27, -72.90], [44.66, -72.10]]);
   mapConfigs['leaflet-map2'] = map;
@@ -325,19 +396,21 @@ function initMap2() {
     [44.3300, -72.1800], [44.2980, -72.2050]
   ], roadColor, true);
 
-  L.marker([44.6270, -72.8130], { icon: makeIcon('camp', 20) }).bindPopup('<b>Brewster River</b><br>Day 2 start').addTo(map);
-  L.marker([44.6330, -72.7950], { icon: makeIcon('swim', 18) }).bindPopup('<b>Poland Covered Bridge</b><br>Sandbar swimming (Komoot pick)').addTo(map);
-  L.marker([44.5620, -72.5980], { icon: makeIcon('food', 20) }).bindPopup('<b>Lost Nation Brewing</b><br>Thu-Sun only, noon-7p').addTo(map);
-  L.marker([44.5730, -72.6350], { icon: makeIcon('food', 18) }).bindPopup('<b>Two Son\'s Bakehouse</b><br>Hyde Park (Komoot pick)').addTo(map);
-  L.marker([44.5520, -72.5100], { icon: makeIcon('bridge', 18) }).bindPopup('<b>Fisher Covered Bridge</b><br>Last covered railroad bridge in VT').addTo(map);
-  L.marker([44.5050, -72.3680], { icon: makeIcon('food', 20) }).bindPopup('<b>Front Seat Coffee</b><br>Cardamom rose lattes, 7a-3p').addTo(map);
-  L.marker([44.5150, -72.3200], { icon: makeIcon('food', 16) }).bindPopup('<b>Hill Farmstead detour</b><br>Best brewery in the world (Komoot pick)').addTo(map);
-  L.marker([44.4100, -72.1400], { icon: makeIcon('point', 16) }).bindPopup('<b>Danville</b><br>Turn south on VT-232').addTo(map);
-  L.marker([44.2980, -72.2050], { icon: makeIcon('camp', 24) }).bindPopup('<b>New Discovery State Park</b><br>Night 2. CCC lean-tos, stone fireplaces.').addTo(map);
+  addMarker(map, [44.6270, -72.8130], makeIcon('camp', 20), '<b>Brewster River</b><br>Day 2 start')
+  addMarker(map, [44.6330, -72.7950], makeIcon('swim', 18), '<b>Poland Covered Bridge</b><br>Sandbar swimming (Komoot pick)')
+  addMarker(map, [44.5620, -72.5980], makeIcon('food', 20), '<b>Lost Nation Brewing</b><br>Thu-Sun only, noon-7p')
+  addMarker(map, [44.5730, -72.6350], makeIcon('food', 18), '<b>Two Son\'s Bakehouse</b><br>Hyde Park (Komoot pick)')
+  addMarker(map, [44.5520, -72.5100], makeIcon('bridge', 18), '<b>Fisher Covered Bridge</b><br>Last covered railroad bridge in VT')
+  addMarker(map, [44.5050, -72.3680], makeIcon('food', 20), '<b>Front Seat Coffee</b><br>Cardamom rose lattes, 7a-3p')
+  addMarker(map, [44.5150, -72.3200], makeIcon('food', 16), '<b>Hill Farmstead detour</b><br>Best brewery in the world (Komoot pick)')
+  addMarker(map, [44.4100, -72.1400], makeIcon('point', 16), '<b>Danville</b><br>Turn south on VT-232')
+  addMarker(map, [44.2980, -72.2050], makeIcon('camp', 24), '<b>New Discovery State Park</b><br>Night 2. CCC lean-tos, stone fireplaces.')
+  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
 }
 
 // MAP 3: The Easy Return
 function initMap3() {
+  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map3', [44.48, -72.45], 10,
     [[44.28, -72.70], [44.62, -72.10]]);
   mapConfigs['leaflet-map3'] = map;
@@ -360,13 +433,15 @@ function initMap3() {
     [44.5570, -72.5920], [44.5350, -72.5280], [44.5220, -72.5160]
   ], roadColor, true);
 
-  L.marker([44.2980, -72.2050], { icon: makeIcon('camp', 20) }).bindPopup('<b>New Discovery</b><br>Day 3 start').addTo(map);
-  L.marker([44.5900, -72.6500], { icon: makeIcon('swim', 20) }).bindPopup('<b>Dog\'s Head Falls</b><br>River swimming, sandy bottoms').addTo(map);
-  L.marker([44.5220, -72.5160], { icon: makeIcon('camp', 24) }).bindPopup('<b>Elmore State Park</b><br>Night 3. Sandy beach, fire tower.').addTo(map);
+  addMarker(map, [44.2980, -72.2050], makeIcon('camp', 20), '<b>New Discovery</b><br>Day 3 start')
+  addMarker(map, [44.5900, -72.6500], makeIcon('swim', 20), '<b>Dog\'s Head Falls</b><br>River swimming, sandy bottoms')
+  addMarker(map, [44.5220, -72.5160], makeIcon('camp', 24), '<b>Elmore State Park</b><br>Night 3. Sandy beach, fire tower.')
+  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
 }
 
 // MAP 4: Back Across the Lake
 function initMap4() {
+  currentMapMarkers = []; currentMapRoutes = [];
   const map = createMap('leaflet-map4', [44.63, -73.05], 10,
     [[44.50, -73.32], [44.82, -72.50]]);
   mapConfigs['leaflet-map4'] = map;
@@ -398,9 +473,10 @@ function initMap4() {
     [44.5880, -73.2870], [44.5530, -73.2750]
   ], trailColor, false);
 
-  L.marker([44.5220, -72.5160], { icon: makeIcon('camp', 18) }).bindPopup('<b>Elmore</b><br>Day 4 start').addTo(map);
-  L.marker([44.5620, -72.5980], { icon: makeIcon('food', 18) }).bindPopup('<b>Morrisville Coffee</b>').addTo(map);
-  L.marker([44.8110, -73.0830], { icon: makeIcon('food', 18) }).bindPopup('<b>St. Albans</b><br>Last meal before the lake').addTo(map);
-  L.marker([44.6180, -73.3050], { icon: makeIcon('ferry', 20) }).bindPopup('<b>Bike Ferry</b><br>Return crossing').addTo(map);
-  L.marker([44.5530, -73.2750], { icon: makeIcon('finish', 24) }).bindPopup('<b>Airport Park — FINISH!</b><br>Victory swim!').addTo(map);
+  addMarker(map, [44.5220, -72.5160], makeIcon('camp', 18), '<b>Elmore</b><br>Day 4 start')
+  addMarker(map, [44.5620, -72.5980], makeIcon('food', 18), '<b>Morrisville Coffee</b>')
+  addMarker(map, [44.8110, -73.0830], makeIcon('food', 18), '<b>St. Albans</b><br>Last meal before the lake')
+  addMarker(map, [44.6180, -73.3050], makeIcon('ferry', 20), '<b>Bike Ferry</b><br>Return crossing')
+  addMarker(map, [44.5530, -73.2750], makeIcon('finish', 24), '<b>Airport Park — FINISH!</b><br>Victory swim!')
+  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
 }
