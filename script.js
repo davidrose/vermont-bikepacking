@@ -117,42 +117,21 @@ function makeIcon(emoji, size) {
 
 function addRoute(map, coords, color, dashed) {
   // Dark outline for contrast against map
-  const outline = L.polyline(coords, {
+  L.polyline(coords, {
     color: '#000',
     weight: 10,
     opacity: 0.2,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
   // Main colored route
-  const line = L.polyline(coords, {
+  return L.polyline(coords, {
     color: color,
     weight: 6,
     opacity: 0.9,
     dashArray: dashed ? '10,8' : null,
-    lineCap: 'round', lineJoin: 'round'
+    lineCap: 'round', lineJoin: 'round',
+    className: 'route-line-anim'
   }).addTo(map);
-
-  // Animate: set stroke-dasharray to total length, offset to hide, then reveal
-  setTimeout(() => {
-    const pathEl = line._path;
-    const outlineEl = outline._path;
-    if (pathEl) {
-      const len = pathEl.getTotalLength();
-      pathEl.style.strokeDasharray = len;
-      pathEl.style.strokeDashoffset = len;
-      pathEl.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1)';
-      requestAnimationFrame(() => { pathEl.style.strokeDashoffset = '0'; });
-    }
-    if (outlineEl && !dashed) {
-      const len = outlineEl.getTotalLength();
-      outlineEl.style.strokeDasharray = len;
-      outlineEl.style.strokeDashoffset = len;
-      outlineEl.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1)';
-      requestAnimationFrame(() => { outlineEl.style.strokeDashoffset = '0'; });
-    }
-  }, 300);
-
-  return line;
 }
 
 function createMap(id, center, zoom, boundsArr) {
