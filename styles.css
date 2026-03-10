@@ -281,7 +281,7 @@ body {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
 }
 
-.day-map svg {
+.day-map svg:not(.leaflet-zoom-animated) {
   width: 100%;
   display: block;
 }
