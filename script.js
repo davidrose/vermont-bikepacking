@@ -188,12 +188,10 @@ function playMapAnimation(dayId, markers, routes) {
     const r = routes[currentRouteIdx];
 
     // We append the point to the route
-    const currentLineCoords = r.line.getLatLngs();
     const nextCoord = r.coords[currentSegmentIdx + 1];
 
-    currentLineCoords.push(nextCoord);
-    r.line.setLatLngs(currentLineCoords);
-    r.outline.setLatLngs(currentLineCoords);
+    r.line.addLatLng(nextCoord);
+    r.outline.addLatLng(nextCoord);
 
     // Check if we hit any markers near this coordinate
     markers.forEach((m, i) => {
@@ -223,7 +221,11 @@ function playMapAnimation(dayId, markers, routes) {
 
   function popMarker(m, idx) {
     m.popped = true;
-    m.marker._icon?.querySelector('.marker-inner')?.classList.add('marker-pop');
+    const inner = m.marker._icon?.querySelector('.marker-inner');
+    if (inner) {
+      inner.classList.remove('marker-hidden');
+      inner.classList.add('marker-pop');
+    }
     // Pop corresponding timeline svg
     if (timelineSVGs[idx]) {
       timelineSVGs[idx].classList.add('marker-pop');
@@ -315,7 +317,7 @@ function initMap0() {
   mapConfigs['leaflet-map0'] = map;
 
   // Exact coordinates for North Beach: [44.4947, -73.2358]
-  L.marker([44.4947, -73.2358], makeIcon('camp', 24), '<b>North Beach Campground</b><br>69 tent sites on Lake Champlain.<br>Bike path to downtown & Island Line.')
+  addMarker(map, [44.4947, -73.2358], makeIcon('camp', 24), '<b>North Beach Campground</b><br>69 tent sites on Lake Champlain.<br>Bike path to downtown & Island Line.')
   addMarker(map, [44.4770, -73.2210], makeIcon('food', 20), '<b>Church Street / Waterfront</b><br>Restaurants, bars, City Market co-op')
   addMarker(map, [44.5530, -73.2750], makeIcon('park', 18), '<b>Airport Park</b><br>Day 1 start. 10 min ride from North Beach.')
 
@@ -324,7 +326,7 @@ function initMap0() {
     [44.4947, -73.2358], [44.4950, -73.2420], [44.5100, -73.2500],
     [44.5250, -73.2600], [44.5400, -73.2700], [44.5530, -73.2750]
   ], trailColor, false);
-  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
+  playMapAnimation('day0', currentMapMarkers, currentMapRoutes);
 }
 
 // MAP 1: The Lake Crossing
@@ -370,7 +372,7 @@ function initMap1() {
   addMarker(map, [44.8110, -73.0830], makeIcon('food', 18), '<b>St. Albans</b><br>Resupply, connect to LVRT')
   addMarker(map, [44.6440, -72.8760], makeIcon('bridge', 18), '<b>Cambridge Junction</b><br>Covered bridge')
   addMarker(map, [44.6270, -72.8130], makeIcon('camp', 24), '<b>Brewster River Campground</b><br>Night 1. Waterfall, swimming hole, fireflies.')
-  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
+  playMapAnimation('day1', currentMapMarkers, currentMapRoutes);
 }
 
 // MAP 2: Into the Kingdom
@@ -405,7 +407,7 @@ function initMap2() {
   addMarker(map, [44.5150, -72.3200], makeIcon('food', 16), '<b>Hill Farmstead detour</b><br>Best brewery in the world (Komoot pick)')
   addMarker(map, [44.4100, -72.1400], makeIcon('point', 16), '<b>Danville</b><br>Turn south on VT-232')
   addMarker(map, [44.2980, -72.2050], makeIcon('camp', 24), '<b>New Discovery State Park</b><br>Night 2. CCC lean-tos, stone fireplaces.')
-  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
+  playMapAnimation('day2', currentMapMarkers, currentMapRoutes);
 }
 
 // MAP 3: The Easy Return
@@ -436,7 +438,7 @@ function initMap3() {
   addMarker(map, [44.2980, -72.2050], makeIcon('camp', 20), '<b>New Discovery</b><br>Day 3 start')
   addMarker(map, [44.5900, -72.6500], makeIcon('swim', 20), '<b>Dog\'s Head Falls</b><br>River swimming, sandy bottoms')
   addMarker(map, [44.5220, -72.5160], makeIcon('camp', 24), '<b>Elmore State Park</b><br>Night 3. Sandy beach, fire tower.')
-  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
+  playMapAnimation('day3', currentMapMarkers, currentMapRoutes);
 }
 
 // MAP 4: Back Across the Lake
@@ -478,5 +480,5 @@ function initMap4() {
   addMarker(map, [44.8110, -73.0830], makeIcon('food', 18), '<b>St. Albans</b><br>Last meal before the lake')
   addMarker(map, [44.6180, -73.3050], makeIcon('ferry', 20), '<b>Bike Ferry</b><br>Return crossing')
   addMarker(map, [44.5530, -73.2750], makeIcon('finish', 24), '<b>Airport Park — FINISH!</b><br>Victory swim!')
-  playMapAnimation('day' + '', currentMapMarkers, currentMapRoutes);
+  playMapAnimation('day4', currentMapMarkers, currentMapRoutes);
 }
