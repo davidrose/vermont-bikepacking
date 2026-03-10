@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
+     version="1.1"
+     creator="Vermont Bikepacking Guide">
+
+  <metadata>
+    <name>Vermont by Bike — 4 Day Bikepacking Loop</name>
+    <desc>Island Line Trail → Lamoille Valley Rail Trail → Groton State Forest → Return. ~160 miles, 4 days, 3 nights camping. Airport Park to Airport Park loop.</desc>
+    <author><name>Vermont Bikepacking Guide</name></author>
+  </metadata>
+
+  <!-- ═══════════ DAY 1: The Lake Crossing (~42 mi) ═══════════ -->
+  <rte>
+    <name>Day 1: The Lake Crossing</name>
+    <desc>Airport Park → Island Line Causeway → Ferry → Hero Islands → St. Albans → LVRT → Brewster River Campground. ~42 mi.</desc>
+
+    <rtept lat="44.5530" lon="-73.2750">
+      <name>Airport Park (Start)</name>
+      <desc>Free parking, bathrooms. Fill bottles. Trail to causeway.</desc>
+      <type>Start</type>
+    </rtept>
+    <rtept lat="44.5880" lon="-73.2870">
+      <name>Colchester Causeway Begin</name>
+      <desc>3-mile causeway across Lake Champlain. Crushed stone surface.</desc>
+      <type>Trail</type>
+    </rtept>
+    <rtept lat="44.6180" lon="-73.3050">
+      <name>Bike Ferry (The Cut)</name>
+      <desc>Seasonal ferry, ~$8 RT. 10a-6p. Check localmotion.org.</desc>
+      <type>Ferry</type>
+    </rtept>
+    <rtept lat="44.6340" lon="-73.3000">
+      <name>South Hero Landing</name>
+      <desc>Ferry landing on South Hero Island. Road riding begins.</desc>
+      <type>Waypoint</type>
+    </rtept>
+    <rtept lat="44.7050" lon="-73.2880">
+      <name>North Hero — Hero's Welcome General Store</name>
+      <desc>Century-old general store. 500+ sandwiches. Get the Vermonter. Lakeside picnic tables. (802) 372-4161</desc>
+      <type>Food</type>
+    </rtept>
+    <rtept lat="44.7650" lon="-73.1750">
+      <name>Alburgh — Champlain Islands</name>
+      <desc>Continue north through islands on US-2.</desc>
+      <type>Waypoint</type>
+    </rtept>
+    <rtept lat="44.8110" lon="-73.0830">
+      <name>Swanton</name>
+      <desc>Western terminus of the LVRT. Connect to trail here or at Sheldon.</desc>
+      <type>Town</type>
+    </rtept>
+    <rtept lat="44.8020" lon="-72.9630">
+      <name>Sheldon Junction — LVRT Connection</name>
+      <desc>Connect to LVRT from Missisquoi Valley Rail Trail. Plan in Ride with GPS.</desc>
+      <type>Trail</type>
+    </rtept>
+    <rtept lat="44.7660" lon="-72.8370">
+      <name>Fairfax — LVRT</name>
+      <desc>Small town on LVRT. General store for resupply.</desc>
+      <type>Town</type>
+    </rtept>
+    <rtept lat="44.6440" lon="-72.8760">
+      <name>Cambridge Junction</name>
+      <desc>Historic covered bridge near trailhead. Picnic tables, restrooms, train-themed playground.</desc>
+      <type>Scenic</type>
+    </rtept>
+    <rtept lat="44.6460" lon="-72.8310">
+      <name>Jeffersonville</name>
+      <desc>Turn south on Rt 108 for campground. Restaurants in village.</desc>
+      <type>Town</type>
+    </rtept>
+    <rtept lat="44.6270" lon="-72.8130">
+      <name>Brewster River Campground</name>
+      <desc>Night 1. 13 riverside tent sites, 20-ft waterfall, swimming hole. No RV hookups. Dark sky stargazing. (802) 391-0564</desc>
+      <type>Camp</type>
+    </rtept>
+    <rtept lat="44.6260" lon="-72.8120">
+      <name>Brewster River Falls — Swim</name>
+      <desc>Cold clear swimming hole below 20-ft cascade. Walk from campsite.</desc>
+      <type>Swim</type>
+    </rtept>
+  </rte>
+
+  <!-- ═══════════ DAY 2: The Long Push East (~55 mi) ═══════════ -->
+  <rte>
+    <name>Day 2: The Long Push East</name>
+    <desc>Brewster River → LVRT east → Lost Nation → Fisher Bridge → Hardwick → Danville → VT-232 south → New Discovery State Park. ~55 mi.</desc>
+
+    <rtept lat="44.6270" lon="-72.8130">
+      <name>Depart Brewster River</name>
+      <desc>Early start — longest day. 2 mi to LVRT at Cambridge Junction.</desc>
+      <type>Start</type>
+    </rtept>
+    <rtept lat="44.6440" lon="-72.8760">
+      <name>Cambridge Junction — LVRT</name>
+      <desc>Rejoin LVRT heading east. Historic covered bridge.</desc>
+      <type>Trail</type>
+    </rtept>
+    <rtept lat="44.6330" lon="-72.7950">
+      <name>Poland Covered Bridge River Access</name>
+      <desc>Komoot rec: Sandbar swimming, canoe launch. Vermont River Conservancy site.</desc>
+      <type>Swim</type>
+    </rtept>
+    <rtept lat="44.5910" lon="-72.6590">
+      <name>Johnson — Old Mill Park</name>
+      <desc>Large parking area, playground. Jenna's Promise Café, Johnson General Store nearby.</desc>
+      <type>Town</type>
+    </rtept>
+    <rtept lat="44.5730" lon="-72.6350">
+      <name>Hyde Park</name>
+      <desc>Komoot rec: Two Son's Bakehouse for fresh pastries. Ten Bends Beer. Parking and bathrooms at trailhead.</desc>
+      <type>Food</type>
+    </rtept>
+    <rtept lat="44.5620" lon="-72.5980">
+      <name>Lost Nation Brewing</name>
+      <desc>Biergarten right off LVRT. Boyden Farm burgers, craft beer. Thu-Sun only noon-7p. (802) 851-8041</desc>
+      <type>Food</type>
+    </rtept>
+    <rtept lat="44.5570" lon="-72.5920">
+      <name>Morrisville — Oxbow Park</name>
+      <desc>Trailhead with parking, restrooms, drinking water. Many restaurants: Ten Railroad Street, Thompson's Flour Shop, Black Cap Coffee.</desc>
+      <type>Town</type>
+    </rtept>
+    <rtept lat="44.5520" lon="-72.5100">
+      <name>Wolcott — Fisher Covered Bridge</name>
+      <desc>Last working covered railroad bridge in Vermont. Photo stop. General store in town. Gazebo, BBQ pit at trailhead.</desc>
+      <type>Scenic</type>
+    </rtept>
+    <rtept lat="44.5480" lon="-72.4800">
+      <name>Wolcott Pond</name>
+      <desc>Komoot rec: Swimming and paddling. New swimming access being developed by VT River Conservancy.</desc>
+      <type>Swim</type>
+    </rtept>
+    <rtept lat="44.5050" lon="-72.3680">
+      <name>Hardwick — Front Seat Coffee</name>
+      <desc>Locally roasted, cardamom rose lattes, housemade pastries. 7a-3p daily. Also: Positive Pie, Village Restaurant (fish &amp; chips), Buffalo Mountain Coop. (802) 472-7947</desc>
+      <type>Food</type>
+    </rtept>
+    <rtept lat="44.5150" lon="-72.3200">
+      <name>Greensboro Bend</name>
+      <desc>Komoot rec: Detour to Willey's General Store (one of VT's oldest), Hill Farmstead Brewery (world-class), Jasper Hill Farmstead cheese.</desc>
+      <type>Food</type>
+    </rtept>
+    <rtept lat="44.4100" lon="-72.1400">
+      <name>Danville — Joe's Pond Trailhead</name>
+      <desc>Restrooms, picnic tables, pavilion. Marty's 1st Stop for lunch. Turn south on VT-232.</desc>
+      <type>Town</type>
+    </rtept>
+    <rtept lat="44.3300" lon="-72.1800">
+      <name>Groton State Forest Entrance</name>
+      <desc>26,000 acres of CCC-era Vermont. VT-232 has hills — save energy.</desc>
+      <type>Waypoint</type>
+    </rtept>
+    <rtept lat="44.2980" lon="-72.2050">
+      <name>New Discovery State Park</name>
+      <desc>Night 2. CCC lean-tos with 1930s stone fireplaces. 15 lean-to + 38 tent sites. Osmore Pond paddle-in lean-tos. Owl's Head trail for summit views. (802) 426-3042</desc>
+      <type>Camp</type>
+    </rtept>
+  </rte>
+
+  <!-- ═══════════ DAY 3: The Easy Return (~30 mi) ═══════════ -->
+  <rte>
+    <name>Day 3: The Easy Return</name>
+    <desc>New Discovery → VT-232 north → LVRT west (downhill) → swimming → Elmore State Park. ~30 mi.</desc>
+
+    <rtept lat="44.2980" lon="-72.2050">
+      <name>Depart New Discovery</name>
+      <desc>Climb back out of Groton on VT-232 north. ~10 mi to LVRT.</desc>
+      <type>Start</type>
+    </rtept>
+    <rtept lat="44.4100" lon="-72.1400">
+      <name>Rejoin LVRT at Danville</name>
+      <desc>Gentle downhill heading west. The 500 ft you climbed now unspools behind you.</desc>
+      <type>Trail</type>
+    </rtept>
+    <rtept lat="44.5050" lon="-72.3680">
+      <name>Hardwick (pass through)</name>
+      <desc>Quick stop if needed. Positive Pie for a slice.</desc>
+      <type>Town</type>
+    </rtept>
+    <rtept lat="44.5570" lon="-72.5920">
+      <name>Morrisville (pass through)</name>
+      <desc>Last services before Elmore. Thompson's Flour Shop or Black Cap Coffee.</desc>
+      <type>Town</type>
+    </rtept>
+    <rtept lat="44.5900" lon="-72.6500">
+      <name>Dog's Head Falls — Lamoille River Swim</name>
+      <desc>Between Hyde Park and Johnson. Sandy bottoms, cold water. No facilities.</desc>
+      <type>Swim</type>
+    </rtept>
+    <rtept lat="44.5800" lon="-72.6600">
+      <name>Beard Park Swimming Hole</name>
+      <desc>Local favorite. Sandy beach area on the Lamoille.</desc>
+      <type>Swim</type>
+    </rtept>
+    <rtept lat="44.5350" lon="-72.5280">
+      <name>Turn south on VT-12</name>
+      <desc>5 mi south to Elmore State Park.</desc>
+      <type>Waypoint</type>
+    </rtept>
+    <rtept lat="44.5220" lon="-72.5160">
+      <name>Elmore State Park</name>
+      <desc>Night 3. "The Beauty Spot of Vermont." Sandy beach, 219-acre lake, CCC beach house (1936). 60 tent/lean-to sites. NO electric hookups. (802) 888-2982</desc>
+      <type>Camp</type>
+    </rtept>
+    <rtept lat="44.5230" lon="-72.5140">
+      <name>Lake Elmore Beach + Fire Tower</name>
+      <desc>Swim at CCC beach. Kayak rental. Fire tower: 3-mi loop to 2,608 ft, 360° views of Green Mtns &amp; Presidentials. Golden hour postcard.</desc>
+      <type>Swim</type>
+    </rtept>
+  </rte>
+
+  <!-- ═══════════ DAY 4: Back Across the Lake (~38 mi) ═══════════ -->
+  <rte>
+    <name>Day 4: Back Across the Lake</name>
+    <desc>Elmore → VT-12 north → LVRT west → St. Albans → Island Line → Causeway → Airport Park. ~38 mi.</desc>
+
+    <rtept lat="44.5220" lon="-72.5160">
+      <name>Depart Elmore</name>
+      <desc>VT-12 north 5 mi to rejoin LVRT.</desc>
+      <type>Start</type>
+    </rtept>
+    <rtept lat="44.5620" lon="-72.5980">
+      <name>Morrisville Coffee</name>
+      <desc>Lost Nation if open (Thu-Sun). Otherwise Thompson's Flour Shop or Black Cap Coffee.</desc>
+      <type>Food</type>
+    </rtept>
+    <rtept lat="44.6440" lon="-72.8760">
+      <name>Cambridge Junction (pass through)</name>
+      <desc>LVRT heading west. Familiar terrain now.</desc>
+      <type>Trail</type>
+    </rtept>
+    <rtept lat="44.8020" lon="-72.9630">
+      <name>Sheldon Junction</name>
+      <desc>Exit LVRT. Road connection south toward islands.</desc>
+      <type>Trail</type>
+    </rtept>
+    <rtept lat="44.8110" lon="-73.0830">
+      <name>St. Albans — Lunch</name>
+      <desc>Last real meal before the lake crossing. Reverse Day 1 route.</desc>
+      <type>Food</type>
+    </rtept>
+    <rtept lat="44.7050" lon="-73.2880">
+      <name>North Hero (pass through)</name>
+      <desc>Island roads south toward causeway.</desc>
+      <type>Waypoint</type>
+    </rtept>
+    <rtept lat="44.6180" lon="-73.3050">
+      <name>Bike Ferry Return</name>
+      <desc>Return ferry crossing. South winds build after 2p — earlier is better.</desc>
+      <type>Ferry</type>
+    </rtept>
+    <rtept lat="44.5880" lon="-73.2870">
+      <name>Causeway Return</name>
+      <desc>3 miles of causeway. The lake is bigger when you're tired.</desc>
+      <type>Trail</type>
+    </rtept>
+    <rtept lat="44.5530" lon="-73.2750">
+      <name>Airport Park (Finish!)</name>
+      <desc>Victory swim in Lake Champlain! ~160 miles, 3 nights, 2 rail trails, 4 swims, 0 RV parks, 1 covered bridge.</desc>
+      <type>Finish</type>
+    </rtept>
+  </rte>
+
+  <!-- ═══════════ WAYPOINTS (for Strava/Komoot markers) ═══════════ -->
+  <wpt lat="44.5530" lon="-73.2750"><name>Airport Park</name><type>Parking</type><sym>Parking Area</sym></wpt>
+  <wpt lat="44.6180" lon="-73.3050"><name>Bike Ferry</name><type>Ferry</type><sym>Boat Ramp</sym></wpt>
+  <wpt lat="44.7050" lon="-73.2880"><name>Hero's Welcome</name><type>Food</type><sym>Restaurant</sym></wpt>
+  <wpt lat="44.8110" lon="-73.0830"><name>St. Albans</name><type>Town</type><sym>City (Medium)</sym></wpt>
+  <wpt lat="44.6270" lon="-72.8130"><name>Brewster River Campground</name><type>Camp</type><sym>Campground</sym></wpt>
+  <wpt lat="44.5620" lon="-72.5980"><name>Lost Nation Brewing</name><type>Food</type><sym>Restaurant</sym></wpt>
+  <wpt lat="44.5520" lon="-72.5100"><name>Fisher Covered Bridge</name><type>Scenic</type><sym>Bridge</sym></wpt>
+  <wpt lat="44.5050" lon="-72.3680"><name>Front Seat Coffee</name><type>Food</type><sym>Restaurant</sym></wpt>
+  <wpt lat="44.5150" lon="-72.3200"><name>Greensboro Bend (Hill Farmstead)</name><type>Food</type><sym>Restaurant</sym></wpt>
+  <wpt lat="44.4100" lon="-72.1400"><name>Danville</name><type>Town</type><sym>City (Small)</sym></wpt>
+  <wpt lat="44.2980" lon="-72.2050"><name>New Discovery State Park</name><type>Camp</type><sym>Campground</sym></wpt>
+  <wpt lat="44.5900" lon="-72.6500"><name>Dog's Head Falls</name><type>Swim</type><sym>Swimming Area</sym></wpt>
+  <wpt lat="44.5220" lon="-72.5160"><name>Elmore State Park</name><type>Camp</type><sym>Campground</sym></wpt>
+  <wpt lat="44.5730" lon="-72.6350"><name>Two Son's Bakehouse (Hyde Park)</name><type>Food</type><sym>Restaurant</sym></wpt>
+  <wpt lat="44.5480" lon="-72.4800"><name>Wolcott Pond</name><type>Swim</type><sym>Swimming Area</sym></wpt>
+  <wpt lat="44.6330" lon="-72.7950"><name>Poland Bridge Swim</name><type>Swim</type><sym>Swimming Area</sym></wpt>
+
+</gpx>

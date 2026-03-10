@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adam David Amos Ezra Bike Trip — Vermont</title>
+    <meta name="description"
+        content="A 4-day bikepacking itinerary through Vermont: Island Line Trail, Lamoille Valley Rail Trail, and back. 160 miles, 3 nights camping, zero RV parks.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <nav class="day-nav" id="dayNav">
+        <a href="#day0" class="day-nav-link" data-day="0">Night 0</a>
+        <a href="#day1" class="day-nav-link active" data-day="1">Day 1</a>
+        <a href="#day2" class="day-nav-link" data-day="2">Day 2</a>
+        <a href="#day3" class="day-nav-link" data-day="3">Day 3</a>
+        <a href="#day4" class="day-nav-link" data-day="4">Day 4</a>
+    </nav>
+
+    <header class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-illustration">
+                <img src="hero-illustration.png" alt="Four friends bikepacking through Vermont hills" width="480">
+            </div>
+            <h1 class="hero-title">Adam David Amos Ezra<br>Bike Trip</h1>
+            <p class="tagline">Island Line Trail → Lamoille Valley Rail Trail → Return<br>4 days · 3 nights · All tent
+                camping</p>
+            <div class="stats-bar">
+                <div class="stat"><span class="stat-val" data-target="160">0</span><span class="stat-label">Miles</span>
+                </div>
+                <div class="stat"><span class="stat-val" data-target="70" data-suffix="%">0</span><span
+                        class="stat-label">On Trail</span></div>
+                <div class="stat"><span class="stat-val" data-target="4">0</span><span class="stat-label">Swims</span>
+                </div>
+                <div class="stat"><span class="stat-val" data-target="0">0</span><span class="stat-label">RV
+                        Parks</span></div>
+            </div>
+        </div>
+        <div class="hero-actions">
+            <a href="vermont-bikepacking-4day.gpx" download class="gpx-btn" id="gpxDownload">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                </svg>
+                Download GPX for Strava / Komoot
+            </a>
+        </div>
+        <div class="scroll-cue">
+            <span>Scroll to explore</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+        </div>
+        </div>
+    </header>
+
+    <div class="container" id="mainContent">
+
+        <!-- ═══ NIGHT BEFORE ═══ -->
+        <section class="day-section reveal" id="day0">
+            <div class="day-header">
+                <div class="day-num" style="background:var(--lake)">0</div>
+                <div>
+                    <div class="day-title">The Night Before</div>
+                    <div class="day-meta">Arrive in Burlington · Set up camp · Explore the waterfront</div>
+                </div>
+            </div>
+
+            <div class="day-map reveal" id="map0">
+                <div id="leaflet-map0" style="width:100%;height:280px;"></div>
+            </div>
+
+            <div class="local-color reveal">
+                <div class="local-color-icon">✦</div>
+                North Beach Campground is Burlington's best-kept secret — 69 tent sites on a sandy Lake Champlain beach,
+                minutes from downtown via a paved bike path. The sunsets over the Adirondacks are the warm-up act. Set
+                up camp, walk to the waterfront for dinner, and wake up ready to ride. It's also just a short ride south
+                to Airport Park where Day 1 begins.
+            </div>
+
+            <div class="stops-timeline">
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">PM</span><span class="duration">arrive</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">⛺ North Beach Campground</span><span
+                                class="badge badge-camp">Night 0</span></div>
+                        <div class="stop-notes">Burlington. 69 tent sites on a sandy Lake Champlain beach. Urban
+                            campground with rural character — bike path connects directly to downtown Burlington and the
+                            Island Line Trail. Adirondack sunset views. Hot showers, restrooms. 10 min bike ride to
+                            Airport Park. <span class="phone">☎ (802) 862-0942</span></div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">Eve</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🍽 Burlington Waterfront</span><span
+                                class="badge badge-food">Dinner</span></div>
+                        <div class="stop-notes">Bike or walk to Church Street for dinner. <strong>Hen of the
+                                Wood</strong> for farm-to-table, <strong>Penny Cluse Café</strong> for comfort food, or
+                            grab pizza at <strong>American Flatbread</strong> on the waterfront. Stock up on snacks at
+                            City Market co-op.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ DAY 1 ═══ -->
+        <section class="day-section reveal" id="day1">
+            <div class="day-header">
+                <div class="day-num">1</div>
+                <div>
+                    <div class="day-title">The Lake Crossing</div>
+                    <div class="day-meta">Airport Park → Brewster River Campground · ~42 mi · 8 mi Island Line · 14 mi
+                        road · 20 mi LVRT</div>
+                </div>
+            </div>
+
+            <div class="day-map reveal" id="map1">
+                <div id="leaflet-map1" style="width:100%;height:320px;"></div>
+            </div>
+
+            <div class="local-color reveal">
+                <div class="local-color-icon">✦</div>
+                The causeway is three miles of marble rubble laid in 1899, hovering inches above Lake Champlain. The
+                bike ferry at "The Cut" costs ~$8 RT and feels like a portal. Your first night is at a campground the
+                owners discovered on a bikepacking trip during the pandemic — riverside tent sites, a 20-foot waterfall,
+                fireflies in the meadow, and a Bernese Mountain Dog named Waffles who may greet you at the gate.
+            </div>
+
+            <div class="stops-timeline">
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">8:00a</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🅿️ Airport Park</span><span
+                                class="badge badge-start">Start</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ Island Line Trail</span></div>
+                        <div class="stop-notes">Free parking, bathrooms. Fill bottles. Trail turns to crushed stone
+                            heading onto the causeway.</div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">8:40a</span><span class="duration">40 min</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">⛴️ Causeway + Bike Ferry</span><span
+                                class="badge badge-scenic">Scenic</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ Island Line</span> → Ferry</div>
+                        <div class="stop-notes">3 mi across the lake. Ferry 10a–6p, ~$8 RT. <span class="warn">Check
+                                localmotion.org — seasonal.</span> 15 min crossing. Water on both sides, nothing between
+                            you and the mountains.</div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">10:30a</span><span class="duration">1 hr ride</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🥪 Hero's Welcome</span><span
+                                class="badge badge-food">Snack · 45 min</span></div>
+                        <div class="stop-surface"><span class="s-road">🛣 Road (US-2 through islands)</span></div>
+                        <div class="stop-notes">North Hero. Century-old general store — 500+ sandwiches on a busy
+                            Saturday. Get the Vermonter with bacon. Lakeside picnic tables across the street. <span
+                                class="phone">☎ (802) 372-4161</span></div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">1:00p</span><span class="duration">1.5 hr</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🏪 St. Albans</span><span
+                                class="badge badge-town">Resupply · 30 min</span></div>
+                        <div class="stop-surface"><span class="s-road">🛣 Road</span></div>
+                        <div class="stop-notes">Groceries, restaurants. Connect to LVRT via Missisquoi VRT at Sheldon
+                            Jct. <span class="warn">⚠ Plan this connection segment in Ride with GPS.</span></div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">5:00p</span><span class="duration">2.5 hr</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">⛺ Brewster River Campground</span><span
+                                class="badge badge-camp">Night 1</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ LVRT</span> → <span class="s-road">2 mi on Rt
+                                108</span></div>
+                        <div class="stop-notes">Jeffersonville. 13 riverside tent sites under trees, 20-ft waterfall,
+                            swimming hole. No RV hookups, no generators. Dark sky stargazing, fireflies in the meadow.
+                            Bathhouse has outlets for charging. <span class="phone">☎ (802) 391-0564</span></div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">6:00p</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🏊 Brewster River Falls</span><span
+                                class="badge badge-swim">Swim · Sunset</span></div>
+                        <div class="stop-notes">Walk to the falls from your site. Cold clear swimming hole below the
+                            20-ft cascade. The owners literally say "go chase the waterfall."</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ DAY 2 ═══ -->
+        <section class="day-section reveal" id="day2">
+            <div class="day-header">
+                <div class="day-num">2</div>
+                <div>
+                    <div class="day-title">Into the Kingdom</div>
+                    <div class="day-meta">Brewster River → New Discovery State Park · ~55 mi · 45 mi LVRT · 10 mi road
+                    </div>
+                </div>
+            </div>
+
+            <div class="day-map reveal" id="map2">
+                <div id="leaflet-map2" style="width:100%;height:320px;"></div>
+            </div>
+
+            <div class="local-color reveal">
+                <div class="local-color-icon">✦</div>
+                This is the big day — 55 miles, but the LVRT does the work. The grade never exceeds 3%. You'll ride
+                through 12-foot corn stalks, past the Fisher Covered Bridge (the last working covered railroad bridge in
+                the country), and into the Northeast Kingdom. At Danville, peel south on VT-232 into Groton State Forest
+                — 26,000 acres of CCC-era Vermont, where the lean-tos have stone fireplaces built by hand in the 1930s.
+            </div>
+
+            <div class="stops-timeline">
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">7:30a</span><span class="duration">departure</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🚲 Depart Brewster River</span></div>
+                        <div class="stop-surface"><span class="s-road">🛣 Rt 108</span> → <span class="s-trail">┼┼ LVRT
+                                at Cambridge Jct</span></div>
+                        <div class="stop-notes">Early start — longest day. 2 mi to the LVRT trailhead at Cambridge
+                            Junction.</div>
+                    </div>
+                </div>
+                <div class="stop-card reveal bonus-stop">
+                    <div class="stop-time"><span class="time">8:15a</span><span class="duration">15 min</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🏊 Poland Covered Bridge</span><span
+                                class="badge badge-swim">Swim</span><span class="badge"
+                                style="background:#e0f0e3;color:#2d5016">Komoot Pick</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ LVRT (trailside)</span></div>
+                        <div class="stop-notes">Cambridge. Sandbar swimming and canoe launch maintained by Vermont River
+                            Conservancy. Quick dip to start the day if it's warm.</div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">9:30a</span><span class="duration">1.5 hr ride</span>
+                    </div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🥐 Two Son's Bakehouse</span><span
+                                class="badge badge-food">Breakfast · 30 min</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ LVRT → Hyde Park</span></div>
+                        <div class="stop-notes">Hyde Park. Fresh pastries and baked goods — highly rated by LVRT riders
+                            on Komoot. Perfect morning fuel. Also: <strong>Ten Bends Beer</strong> nearby for later.
+                        </div>
+                    </div>
+                </div>
+                <div class="stop-card reveal bonus-stop">
+                    <div class="stop-time"><span class="time">~</span><span class="duration">if open</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🍺 Lost Nation Brewing</span><span
+                                class="badge badge-food">Alt Stop</span><span class="badge"
+                                style="background:#e0f0e3;color:#2d5016">Komoot Pick</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ LVRT (right on the trail)</span></div>
+                        <div class="stop-notes">Morrisville. Biergarten right off the trail. Boyden Farm burgers, craft
+                            beer. <span class="warn">⚠ Open Thu–Sun only, noon–7p.</span> Only works if you pass through
+                            after noon. <span class="phone">☎ (802) 851-8041</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">1:00p</span><span class="duration">2 hr ride</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">☕ Front Seat Coffee</span><span
+                                class="badge badge-food">Lunch · 30 min</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ LVRT → walk to Main St</span></div>
+                        <div class="stop-notes">Hardwick. Locally roasted, housemade pastries, cardamom rose lattes.
+                            Open daily 7a–3p. Also in Hardwick: <strong>Positive Pie</strong> (pizza), <strong>Village
+                                Restaurant</strong> (fish &amp; chips), <strong>Buffalo Mountain Coop</strong> (natural
+                            foods). <span class="phone">☎ (802) 472-7947</span></div>
+                    </div>
+                </div>
+                <div class="stop-card reveal bonus-stop">
+                    <div class="stop-time"><span class="time">~</span><span class="duration">detour</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🍺 Greensboro Bend Detour</span><span
+                                class="badge badge-food">World-Class</span><span class="badge"
+                                style="background:#e0f0e3;color:#2d5016">Komoot Pick</span></div>
+                        <div class="stop-surface"><span class="s-road">🛣 ~5 mi detour north from LVRT</span></div>
+                        <div class="stop-notes">If you have time and energy: <strong>Hill Farmstead Brewery</strong>
+                            (regularly named best brewery in the world), <strong>Jasper Hill Farmstead</strong> cheese,
+                            and <strong>Willey's General Store</strong> (one of Vermont's oldest). The detour adds ~10
+                            mi round-trip but NEK devotees say it's essential.</div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">4:30p</span><span class="duration">2.5 hr ride</span>
+                    </div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">⛺ New Discovery State Park</span><span
+                                class="badge badge-camp">Night 2</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ LVRT to Danville</span> → <span
+                                class="s-road">🛣 ~10 mi south on VT-232</span></div>
+                        <div class="stop-notes">Groton State Forest. CCC-built lean-tos with stone fireplaces from the
+                            1930s. Remote lean-tos at Osmore Pond. <span class="warn">⚠ VT-232 has some hills — save
+                                energy.</span> <span class="phone">☎ (802) 426-3042</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ DAY 3 ═══ -->
+        <section class="day-section reveal" id="day3">
+            <div class="day-header">
+                <div class="day-num">3</div>
+                <div>
+                    <div class="day-title">The Easy Return</div>
+                    <div class="day-meta">New Discovery → Elmore State Park · ~30 mi · 10 mi road · 15 mi LVRT · 5 mi
+                        road</div>
+                </div>
+            </div>
+
+            <div class="day-map reveal" id="map3">
+                <div id="leaflet-map3" style="width:100%;height:320px;"></div>
+            </div>
+
+            <div class="local-color reveal">
+                <div class="local-color-icon">✦</div>
+                The payoff day. Retrace north to the LVRT, then let gravity do the work heading west. The 500 feet you
+                climbed over two days now unspools behind you. Between Hyde Park and Johnson, pull off at Dog's Head
+                Falls for a river swim. End at Elmore — "The Beauty Spot of Vermont" — where the CCC built a beach house
+                in 1936 that still has a concession stand and boat rentals.
+            </div>
+
+            <div class="stops-timeline">
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">8:30a</span><span class="duration">departure</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🚲 Depart New Discovery</span></div>
+                        <div class="stop-surface"><span class="s-road">🛣 VT-232 north ~10 mi</span> → <span
+                                class="s-trail">┼┼ LVRT</span></div>
+                        <div class="stop-notes">Climb back out of Groton on VT-232 to rejoin the LVRT. Mostly downhill
+                            once on trail heading west.</div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">12:00p</span><span class="duration">2 hr ride</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🏊 Lamoille River Swimming</span><span
+                                class="badge badge-swim">Swim · 45 min</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ LVRT (trailside)</span></div>
+                        <div class="stop-notes">Between Hyde Park and Johnson. Dog's Head Falls and Beard Park are the
+                            local favorites. Sandy bottoms, cold water.</div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">2:30p</span><span class="duration">1.5 hr ride</span>
+                    </div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">⛺ Elmore State Park</span><span
+                                class="badge badge-camp">Night 3</span></div>
+                        <div class="stop-surface"><span class="s-road">🛣 VT-12, 5 mi south from LVRT</span></div>
+                        <div class="stop-notes">"The Beauty Spot of Vermont." Sandy beach, 219-acre lake, CCC beach
+                            house. <span class="warn">⚠ NO electric hookups.</span> <span class="phone">☎ (802)
+                                888-2982</span></div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">3:30p</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🏊 Lake Elmore Beach + 🗼 Fire
+                                Tower</span><span class="badge badge-swim">Swim + Hike</span></div>
+                        <div class="stop-notes">Walk from camp to the beach. Fire tower trail is a 3-mi loop to 2,608 ft
+                            — 360° views. The golden hour view is the trip's postcard.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ DAY 4 ═══ -->
+        <section class="day-section reveal" id="day4">
+            <div class="day-header">
+                <div class="day-num">4</div>
+                <div>
+                    <div class="day-title">Back Across the Lake</div>
+                    <div class="day-meta">Elmore → Airport Park · ~38 mi · 5 mi road · 20 mi LVRT/road · 8 mi Island
+                        Line</div>
+                </div>
+            </div>
+
+            <div class="day-map reveal" id="map4">
+                <div id="leaflet-map4" style="width:100%;height:320px;"></div>
+            </div>
+
+            <div class="local-color reveal">
+                <div class="local-color-icon">✦</div>
+                The last day is the shortest and the sweetest. You already know the trail, the road, the causeway. But
+                it hits different heading home — the lake is bigger when you're tired, and the moment you pull into
+                Airport Park you'll feel the particular satisfaction of a loop closed. Three state parks, one riverside
+                campground, zero RV hookups, and more Vermont than most people see in a lifetime.
+            </div>
+
+            <div class="stops-timeline">
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">8:30a</span><span class="duration">30 min</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">☕ Morrisville Coffee</span><span
+                                class="badge badge-food">Breakfast · 30 min</span></div>
+                        <div class="stop-surface"><span class="s-road">🛣 VT-12</span> → <span class="s-trail">┼┼
+                                LVRT</span></div>
+                        <div class="stop-notes">Lost Nation if open (Thu–Sun). Otherwise Thompson's Flour Shop on Main
+                            St.</div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">11:30a</span><span class="duration">2 hr ride</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🥪 St. Albans</span><span
+                                class="badge badge-food">Lunch · 45 min</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ LVRT</span> → <span class="s-road">🛣
+                                Road</span></div>
+                        <div class="stop-notes">Reverse Day 1. Last real meal before the final push across the lake.
+                        </div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">2:00p</span><span class="duration">1 hr</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">⛴️ Causeway + Ferry</span><span
+                                class="badge badge-scenic">Scenic</span></div>
+                        <div class="stop-surface"><span class="s-road">🛣 Road</span> → <span class="s-trail">┼┼ Island
+                                Line</span></div>
+                        <div class="stop-notes">The grand return. Ferry, then 3 miles of causeway. <span class="warn">⚠
+                                South winds build after 2p — earlier is better.</span></div>
+                    </div>
+                </div>
+                <div class="stop-card reveal">
+                    <div class="stop-time"><span class="time">3:00p</span><span class="duration">30 min</span></div>
+                    <div class="stop-content">
+                        <div class="stop-name-row"><span class="stop-name">🏊 Airport Park</span><span
+                                class="badge badge-finish">Finish</span><span class="badge badge-swim">Victory
+                                Swim</span></div>
+                        <div class="stop-surface"><span class="s-trail">┼┼ Island Line Trail</span></div>
+                        <div class="stop-notes">You're back. Swim in Lake Champlain. ~160 miles, three nights, two rail
+                            trails, four swims, zero RV parks, and a covered bridge.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ ELEVATION ═══ -->
+        <section class="elevation reveal" id="elevation">
+            <h3>Elevation Profile</h3>
+            <div class="elev-visual">
+                <svg viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg" id="elevSvg">
+                    <defs>
+                        <linearGradient id="elevFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#3a8c3f" stop-opacity="0.3" />
+                            <stop offset="100%" stop-color="#3a8c3f" stop-opacity="0.05" />
+                        </linearGradient>
+                    </defs>
+                    <line x1="50" y1="20" x2="50" y2="110" stroke="#e2ddd4" stroke-width="0.5" />
+                    <line x1="50" y1="110" x2="680" y2="110" stroke="#e2ddd4" stroke-width="0.5" />
+                    <line x1="50" y1="70" x2="680" y2="70" stroke="#e2ddd4" stroke-width="0.5" stroke-dasharray="3,3" />
+                    <line x1="50" y1="30" x2="680" y2="30" stroke="#e2ddd4" stroke-width="0.5" stroke-dasharray="3,3" />
+                    <text x="10" y="114" font-size="8" fill="#8a8578" font-family="DM Sans">100 ft</text>
+                    <text x="10" y="74" font-size="8" fill="#8a8578" font-family="DM Sans">400 ft</text>
+                    <text x="10" y="34" font-size="8" fill="#8a8578" font-family="DM Sans">700 ft</text>
+                    <path class="elev-area"
+                        d="M50,110 L50,100 Q120,98 180,92 Q250,85 320,70 Q380,55 420,35 L430,33 Q440,35 460,50 Q500,70 550,75 Q600,80 650,90 L680,95 L680,110Z"
+                        fill="url(#elevFill)" />
+                    <path class="elev-line"
+                        d="M50,100 Q120,98 180,92 Q250,85 320,70 Q380,55 420,35 L430,33 Q440,35 460,50 Q500,70 550,75 Q600,80 650,90 L680,95"
+                        stroke="#3a8c3f" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                    <circle cx="50" cy="100" r="4" fill="#2d5016" /><text x="42" y="125" font-size="8" fill="#2d5016"
+                        font-family="DM Sans" font-weight="600">D1</text>
+                    <circle cx="320" cy="70" r="4" fill="#2d5016" /><text x="312" y="125" font-size="8" fill="#2d5016"
+                        font-family="DM Sans" font-weight="600">D2</text>
+                    <circle cx="430" cy="33" r="4" fill="#c53030" /><text x="415" y="26" font-size="7" fill="#c53030"
+                        font-family="DM Sans">Groton SF</text>
+                    <circle cx="550" cy="75" r="4" fill="#2d5016" /><text x="542" y="125" font-size="8" fill="#2d5016"
+                        font-family="DM Sans" font-weight="600">D3</text>
+                    <circle cx="680" cy="95" r="4" fill="#1a6985" /><text x="668" y="125" font-size="8" fill="#1a6985"
+                        font-family="DM Sans" font-weight="600">D4</text>
+                    <text x="350" y="125" font-size="7" fill="#8a8578" font-family="DM Sans"
+                        font-style="italic">railroads never exceed 3% grade</text>
+                </svg>
+            </div>
+        </section>
+
+        <!-- ═══ PACKING CHECKLIST ═══ -->
+        <section class="tips reveal" id="checklist">
+            <h3>Bike Camping Packing Checklist</h3>
+            <div class="checklist-grid">
+                <div class="checklist-col">
+                    <h4>🚲 Bike & Bags</h4>
+                    <label class="check-item"><input type="checkbox"> Frame bag</label>
+                    <label class="check-item"><input type="checkbox"> Saddle bag / seat pack</label>
+                    <label class="check-item"><input type="checkbox"> Handlebar roll</label>
+                    <label class="check-item"><input type="checkbox"> Top tube bag (snacks/phone)</label>
+                    <label class="check-item"><input type="checkbox"> Front & rear lights</label>
+                    <label class="check-item"><input type="checkbox"> Helmet</label>
+                    <label class="check-item"><input type="checkbox"> Lightweight lock</label>
+
+                    <h4>🏕️ Shelter & Sleep</h4>
+                    <label class="check-item"><input type="checkbox"> Tent or bivy</label>
+                    <label class="check-item"><input type="checkbox"> Sleeping bag (40°F rated)</label>
+                    <label class="check-item"><input type="checkbox"> Sleeping pad</label>
+                    <label class="check-item"><input type="checkbox"> Inflatable pillow</label>
+
+                    <h4>🍳 Cook & Hydrate</h4>
+                    <label class="check-item"><input type="checkbox"> Camp stove + fuel canister</label>
+                    <label class="check-item"><input type="checkbox"> Small pot & spork</label>
+                    <label class="check-item"><input type="checkbox"> Lighter</label>
+                    <label class="check-item"><input type="checkbox"> Water bottles (2×)</label>
+                    <label class="check-item"><input type="checkbox"> Water filter or purification tabs</label>
+                    <label class="check-item"><input type="checkbox"> Freeze-dried meals + trail snacks</label>
+                </div>
+                <div class="checklist-col">
+                    <h4>👕 Clothing</h4>
+                    <label class="check-item"><input type="checkbox"> Padded cycling shorts</label>
+                    <label class="check-item"><input type="checkbox"> Merino jersey (2×)</label>
+                    <label class="check-item"><input type="checkbox"> Rain jacket</label>
+                    <label class="check-item"><input type="checkbox"> Puffy jacket for camp</label>
+                    <label class="check-item"><input type="checkbox"> Camp clothes (shirt, pants)</label>
+                    <label class="check-item"><input type="checkbox"> Socks (3 pairs merino)</label>
+                    <label class="check-item"><input type="checkbox"> Camp sandals or flip-flops</label>
+                    <label class="check-item"><input type="checkbox"> Warm hat / beanie</label>
+                    <label class="check-item"><input type="checkbox"> Cycling gloves</label>
+                    <label class="check-item"><input type="checkbox"> Chamois cream</label>
+
+                    <h4>🔧 Tools & Repair</h4>
+                    <label class="check-item"><input type="checkbox"> Multi-tool (hex keys + chain breaker)</label>
+                    <label class="check-item"><input type="checkbox"> Spare tube + patch kit</label>
+                    <label class="check-item"><input type="checkbox"> Tire levers</label>
+                    <label class="check-item"><input type="checkbox"> Mini pump</label>
+                    <label class="check-item"><input type="checkbox"> Chain lube</label>
+                    <label class="check-item"><input type="checkbox"> Zip ties + duct tape</label>
+
+                    <h4>📱 Electronics & Personal</h4>
+                    <label class="check-item"><input type="checkbox"> Phone + offline maps (Ride with GPS)</label>
+                    <label class="check-item"><input type="checkbox"> Power bank + cables</label>
+                    <label class="check-item"><input type="checkbox"> Headlamp</label>
+                    <label class="check-item"><input type="checkbox"> First aid kit</label>
+                    <label class="check-item"><input type="checkbox"> Sunscreen + bug spray</label>
+                    <label class="check-item"><input type="checkbox"> Toothbrush + biodegradable soap</label>
+                    <label class="check-item"><input type="checkbox"> Cash & ID</label>
+                    <label class="check-item"><input type="checkbox"> Ear plugs</label>
+                    <label class="check-item"><input type="checkbox"> 3-ft extension cord (for bathhouses)</label>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="site-footer">
+        <p>Adam David Amos Ezra Bike Trip</p>
+        <p class="footer-sub">Island Line Trail · Lamoille Valley Rail Trail · ~160 miles · Zero RV parks</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
