@@ -136,56 +136,53 @@ function makeIcon(type, size) {
 }
 
 function addMarker(map, latlng, icon, popup) {
-  const m = L.marker(latlng, { icon: icon }).bindPopup(popup).addTo(map);
-  currentMapMarkers.push({ marker: m, latlng: latlng });
-  return m;
+  return L.marker(latlng, { icon: icon }).bindPopup(popup).addTo(map);
 }
 
 function addRoute(map, coords, color, dashed) {
-  const outline = L.polyline(coords, {
+  L.polyline(coords, {
     color: '#000', weight: 8, opacity: 0.2,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
-
-  const line = L.polyline(coords, {
+  L.polyline(coords, {
     color: color, weight: 5, opacity: 0.9,
     dashArray: dashed ? '8,8' : null,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
-
-  currentMapRoutes.push({ line, outline, coords, dashed });
 }
 
-let currentMapMarkers = [];
-let currentMapRoutes = [];
-
-function playMapAnimation(dayId, markers, routes) {
-  const TOTAL_DURATION = 1500;
-
+function popMapMarkers(map, dayId) {
   const daySection = document.getElementById(dayId);
   const timelineSVGs = daySection ? Array.from(daySection.querySelectorAll('.timeline-svg')) : [];
+  const markerEls = Array.from(map.getPane('markerPane').querySelectorAll('.marker-inner'));
+  const SPREAD = 1500;
+  const perMarker = markerEls.length > 0 ? SPREAD / markerEls.length : 500;
+  markerEls.forEach((el, idx) => {
+    setTimeout(() => {
+      el.classList.remove('marker-hidden');
+      el.classList.add('marker-pop');
+      if (timelineSVGs[idx]) timelineSVGs[idx].classList.add('marker-pop');
+    }, idx * perMarker);
+  });
+}
 
-  function popMarker(m, idx) {
-    if (m.popped) return;
-    m.popped = true;
-    const inner = m.marker._icon?.querySelector('.marker-inner');
-    if (inner) {
-      inner.classList.remove('marker-hidden');
-      inner.classList.add('marker-pop');
-    }
-    if (timelineSVGs[idx]) timelineSVGs[idx].classList.add('marker-pop');
-  }
+// Initialize maps when they scroll into view
+const mapConfigs = {
+  'leaflet-map0': null, 'leaflet-map1': null,
+  'leaflet-map2': null, 'leaflet-map3': null, 'leaflet-map4': null
+};
 
-  // Pop markers proportionately after the map settles
+function initMapContents(map, dayId, addContentFn) {
+  mapConfigs[map.getContainer().id] = map;
+  // Double invalidateSize + 600ms timeout guarantees the container is at its
+  // true pixel size before Leaflet projects coordinates into SVG points.
+  map.invalidateSize();
   setTimeout(() => {
-    if (markers.length > 0) {
-      const timePerMarker = TOTAL_DURATION / markers.length;
-      markers.forEach((m, idx) => {
-        const delay = idx === 0 ? 0 : idx * timePerMarker;
-        setTimeout(() => popMarker(m, idx), delay);
-      });
-    }
-  }, 1000); // Wait for map zoom to finish
+    map.invalidateSize();
+    addContentFn(map);
+    // Pop markers 400ms after routes are added
+    setTimeout(() => popMapMarkers(map, dayId), 400);
+  }, 600);
 }
 
 function createMap(id, center, zoom, boundsArr) {
@@ -204,23 +201,11 @@ function createMap(id, center, zoom, boundsArr) {
     .addTo(map);
 
   if (boundsArr) {
-    // Use fitBounds only — no flying animation. flyToBounds causes polylines
-    // to be projected mid-animation against the wrong viewport, resulting in
-    // routes that are only a few pixels long and invisible on the map.
     map.fitBounds(boundsArr, { padding: [40, 40] });
   }
 
   return map;
 }
-
-// Initialize maps when they scroll into view
-const mapConfigs = {
-  'leaflet-map0': null,
-  'leaflet-map1': null,
-  'leaflet-map2': null,
-  'leaflet-map3': null,
-  'leaflet-map4': null
-};
 
 const mapInitObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -242,22 +227,6 @@ function initMap(id) {
     case 'leaflet-map3': initMap3(); break;
     case 'leaflet-map4': initMap4(); break;
   }
-}
-
-function initMapContents(map, dayId, addContentFn) {
-  mapConfigs[map.getContainer().id] = map;
-  // Force the map container to its true rendered size before projecting coords.
-  // Leaflet's whenReady fires too early (before browser layout is complete).
-  // A short timeout after invalidateSize gives the browser time to finalize
-  // the container dimensions, so polyline coordinates project correctly.
-  map.invalidateSize();
-  setTimeout(() => {
-    map.invalidateSize();
-    currentMapMarkers = [];
-    currentMapRoutes = [];
-    addContentFn(map);
-    playMapAnimation(dayId, currentMapMarkers, currentMapRoutes);
-  }, 300);
 }
 
 // MAP 0: Night Before — Burlington / North Beach
