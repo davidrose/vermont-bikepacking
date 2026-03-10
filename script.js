@@ -142,116 +142,76 @@ function addMarker(map, latlng, icon, popup) {
 }
 
 function addRoute(map, coords, color, dashed) {
-  const outline = L.polyline([], {
-    color: '#000', weight: 8, opacity: 0.2,
+  const outline = L.polyline(coords, {
+    color: '#000', weight: 8, opacity: 0,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
 
-  const line = L.polyline([], {
-    color: color, weight: 5, opacity: 0.9,
+  const line = L.polyline(coords, {
+    color: color, weight: 5, opacity: 0,
     dashArray: dashed ? '8,8' : null,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
 
-  currentMapRoutes.push({ line, outline, coords });
+  currentMapRoutes.push({ line, outline, coords, dashed });
 }
+
 let currentMapMarkers = [];
 let currentMapRoutes = [];
 
 function playMapAnimation(dayId, markers, routes) {
   const TOTAL_DURATION = 5000;
 
-  // Calculate total route length in coordinates (approximate distance scaling)
-  let totalPoints = 0;
-  routes.forEach(route => {
-    totalPoints += route.coords.length - 1;
-  });
-
-  if (totalPoints === 0) return;
-  const timePerSegment = TOTAL_DURATION / totalPoints;
-
-  // Grab timelines
   const daySection = document.getElementById(dayId);
   const timelineSVGs = daySection ? Array.from(daySection.querySelectorAll('.timeline-svg')) : [];
 
-  let currentRouteIdx = 0;
-  let currentSegmentIdx = 0;
-
-  // Animation loop logic
-  function drawNext() {
-    if (currentRouteIdx >= routes.length) {
-      // Done drawing lines, pop any remaining markers just in case
-      markers.forEach((m, i) => popMarker(m, i));
-      return;
-    }
-
-    const r = routes[currentRouteIdx];
-
-    // We append the point to the route
-    const nextCoord = r.coords[currentSegmentIdx + 1];
-
-    r.line.addLatLng(nextCoord);
-    r.outline.addLatLng(nextCoord);
-
-    // Check if we hit any markers near this coordinate
-    markers.forEach((m, i) => {
-      if (m.popped) return;
-      const d = mapDistance(m.latlng, nextCoord);
-      if (d < 0.01) { // roughly close
-        popMarker(m, i);
-      }
-    });
-
-    currentSegmentIdx++;
-    if (currentSegmentIdx >= r.coords.length - 1) {
-      // Done with this route segment
-      currentRouteIdx++;
-      currentSegmentIdx = 0;
-      if (currentRouteIdx < routes.length) {
-        // Init next route starting point
-        const nextR = routes[currentRouteIdx];
-        const startPoint = nextR.coords[0];
-        nextR.line.setLatLngs([startPoint]);
-        nextR.outline.setLatLngs([startPoint]);
-      }
-    }
-
-    setTimeout(drawNext, timePerSegment);
-  }
-
   function popMarker(m, idx) {
+    if (m.popped) return;
     m.popped = true;
     const inner = m.marker._icon?.querySelector('.marker-inner');
     if (inner) {
       inner.classList.remove('marker-hidden');
       inner.classList.add('marker-pop');
     }
-    // Pop corresponding timeline svg
-    if (timelineSVGs[idx]) {
-      timelineSVGs[idx].classList.add('marker-pop');
+    if (timelineSVGs[idx]) timelineSVGs[idx].classList.add('marker-pop');
+  }
+
+  // Draw lines smoothly via CSS
+  routes.forEach(r => {
+    const el = r.line._path;
+    const outEl = r.outline._path;
+    if (el && outEl) {
+      const len = el.getTotalLength() + 200;
+
+      el.style.strokeDasharray = `${len} ${len}`;
+      el.style.strokeDashoffset = len;
+      outEl.style.strokeDasharray = `${len} ${len}`;
+      outEl.style.strokeDashoffset = len;
+
+      el.getBoundingClientRect(); // flush layout
+
+      r.line.setStyle({ opacity: 0.9 });
+      r.outline.setStyle({ opacity: 0.2 });
+
+      el.style.transition = `stroke-dashoffset ${TOTAL_DURATION}ms ease-out`;
+      outEl.style.transition = `stroke-dashoffset ${TOTAL_DURATION}ms ease-out`;
+
+      el.style.strokeDashoffset = '0';
+      outEl.style.strokeDashoffset = '0';
+
+      if (r.dashed) {
+        setTimeout(() => { el.style.strokeDasharray = '8,8'; }, TOTAL_DURATION + 500);
+      }
     }
-  }
+  });
 
-  function mapDistance(p1, p2) {
-    if (!p1 || !p2) return 999;
-    const p1arr = Array.isArray(p1) ? p1 : [p1.lat, p1.lng];
-    const p2arr = Array.isArray(p2) ? p2 : [p2.lat, p2.lng];
-    return Math.sqrt(Math.pow(p1arr[0] - p2arr[0], 2) + Math.pow(p1arr[1] - p2arr[1], 2));
-  }
-
-  // Start drawing!
-  if (routes.length > 0) {
-    const r = routes[0];
-    const startPoint = r.coords[0];
-    r.line.setLatLngs([startPoint]);
-    r.outline.setLatLngs([startPoint]);
-
-    // Immediate pop of the first marker if it's right at start
-    setTimeout(drawNext, timePerSegment);
-  } else {
-    // If no routes, just pop markers
-    markers.forEach((m, i) => {
-      setTimeout(() => popMarker(m, i), i * 500);
+  // Pop markers proportionally over the 5 seconds
+  if (markers.length > 0) {
+    const timePerMarker = TOTAL_DURATION / markers.length;
+    markers.forEach((m, idx) => {
+      // First marker pops instantly
+      const delay = idx === 0 ? 0 : idx * timePerMarker;
+      setTimeout(() => popMarker(m, idx), delay);
     });
   }
 }
