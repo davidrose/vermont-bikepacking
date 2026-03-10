@@ -130,12 +130,12 @@ function makeIcon(type, size) {
 
 function addRoute(map, coords, color, dashed) {
   const outline = L.polyline(coords, {
-    color: '#000', weight: 8, opacity: 0.15,
+    color: '#000', weight: 8, opacity: 0,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
 
   const line = L.polyline(coords, {
-    color: color, weight: 5, opacity: 0.9,
+    color: color, weight: 5, opacity: 0,
     dashArray: dashed ? '8,8' : null,
     lineCap: 'round', lineJoin: 'round'
   }).addTo(map);
@@ -145,29 +145,31 @@ function addRoute(map, coords, color, dashed) {
     const outEl = outline._path;
     if (el && outEl) {
       const len = el.getTotalLength() + 50; // extra buffer
-      
-      // animate main line
+
+      // setup lengths before revealing
       el.style.strokeDasharray = `${len} ${len}`;
       el.style.strokeDashoffset = len;
-      
-      // animate outline
       outEl.style.strokeDasharray = `${len} ${len}`;
       outEl.style.strokeDashoffset = len;
-      
+
       el.getBoundingClientRect(); // flush layout
-      
-      el.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.3, 0.1, 0.3, 1)';
-      outEl.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.3, 0.1, 0.3, 1)';
-      
+
+      // Make them visible 
+      el.style.strokeOpacity = '0.9';
+      outEl.style.strokeOpacity = '0.15';
+
+      el.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.3, 0.1, 0.3, 1)';
+      outEl.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.3, 0.1, 0.3, 1)';
+
       el.style.strokeDashoffset = '0';
       outEl.style.strokeDashoffset = '0';
-      
+
       // if dashed, restore dashes after animation completes
-      if(dashed) {
-        setTimeout(() => { el.style.strokeDasharray = '8,8'; }, 2000);
+      if (dashed) {
+        setTimeout(() => { el.style.strokeDasharray = '8,8'; }, 1500);
       }
     }
-  }, 300);
+  }, 1400);
 
   return line;
 }
@@ -195,8 +197,8 @@ function createMap(id, center, zoom, boundsArr) {
 
     // Gradually zoom in and pan to the exact bounds
     setTimeout(() => {
-      map.flyToBounds(boundsArr, { padding: [30, 30], duration: 2.5, easeLinearity: 0.1 });
-    }, 400);
+      map.flyToBounds(boundsArr, { padding: [30, 30], duration: 1.2, easeLinearity: 0.1 });
+    }, 100);
   }
 
   return map;
