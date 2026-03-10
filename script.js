@@ -200,19 +200,14 @@ function createMap(id, center, zoom, boundsArr) {
   }).addTo(map);
 
   L.control.attribution({ prefix: false, position: 'bottomright' })
-    .addAttribution('© <a href="https://opentopomap.org">CartoDB</a>')
+    .addAttribution('© <a href="https://carto.com">CartoDB</a>')
     .addTo(map);
 
   if (boundsArr) {
-    map.fitBounds(boundsArr, { padding: [30, 30] });
-    const currentZoom = map.getZoom();
-    map.setZoom(currentZoom - 1, { animate: false });
-
-    // Ensure map doesn't get stuck visually, call invalidateSize
-    setTimeout(() => {
-      map.invalidateSize();
-      map.flyToBounds(boundsArr, { padding: [30, 30], duration: 1.2, easeLinearity: 0.1 });
-    }, 200);
+    // Use fitBounds only — no flying animation. flyToBounds causes polylines
+    // to be projected mid-animation against the wrong viewport, resulting in
+    // routes that are only a few pixels long and invisible on the map.
+    map.fitBounds(boundsArr, { padding: [40, 40] });
   }
 
   return map;
